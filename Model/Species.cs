@@ -6,7 +6,19 @@ using System.Threading.Tasks;
 
 namespace CasusExotischNederland.Model
 {
-    internal class Species
+    public class Species
     {
+        public int Id { get; set; }
+        public List<Observation> Observations { get; set; }
+        public string Name { get; set; }
+        public string FotoUrl { get; set; }
+
+        public Species(int id, string name, string fotoUrl)
+        {
+            Id = id;
+            Name = name;
+            FotoUrl = fotoUrl;
+            Observations = new List<Observation>();
+        }
     }
 }

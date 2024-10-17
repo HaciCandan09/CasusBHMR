@@ -6,7 +6,19 @@ using System.Threading.Tasks;
 
 namespace CasusExotischNederland.Model
 {
-    internal class Answer
+    public class Answer
     {
+        public int Id { get; set; }
+        public Question Question { get; set; }
+        public string AnswerText { get; set; }
+        public bool IsCorrect { get; set; }
+
+        public Answer(int id, Question question, string answerText, bool isCorrect)
+        {
+            Id = id;
+            Question = question;
+            AnswerText = answerText;
+            IsCorrect = isCorrect;
+        }
     }
 }

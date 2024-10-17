@@ -6,7 +6,23 @@ using System.Threading.Tasks;
 
 namespace CasusExotischNederland.Model
 {
-    internal class Question
+    public class Question
     {
+        public int Id { get; set; }
+        public List<Answer> Answers { get; set; }
+        public List<User> Users { get; set; }
+        public string QuestionText { get; set; }
+        public string Type { get; set; }
+        public int AmountOfPoints { get; set; }
+
+        public Question(int id, string questionText, string type, int amountOfPoints)
+        {
+            Id = id;
+            QuestionText = questionText;
+            Type = type;
+            AmountOfPoints = amountOfPoints;
+            Answers = new List<Answer>();
+            Users = new List<User>();
+        }
     }
 }
