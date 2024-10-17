@@ -6,7 +6,29 @@ using System.Threading.Tasks;
 
 namespace CasusExotischNederland.Model
 {
-    internal class Observation
+    public class Observation
     {
+        public int Id { get; set; }
+        public Area Area { get; set; }
+        public Species Species { get; set; }
+        public User User { get; set; }
+        public DateTime Date { get; set; }
+        public string Name { get; set; }
+        public float CoordinateX { get; set; }
+        public float CoordinateY { get; set; }
+        public string FotoUrl { get; set; }
+
+        public Observation(int id, Area area, Species species, User user, DateTime date, string name, float coordinateX, float coordinateY, string fotoUrl)
+        {
+            Id = id;
+            Area = area;
+            Species = species;
+            User = user;
+            Date = date;
+            Name = name;
+            CoordinateX = coordinateX;
+            CoordinateY = coordinateY;
+            FotoUrl = fotoUrl;
+        }
     }
 }
