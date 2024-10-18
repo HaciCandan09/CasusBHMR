@@ -16,9 +16,10 @@ namespace CasusExotischNederland.Model
         public float CoordinateY { get; set; }
         public string Type { get; set; }
 
-        public Poi(int id, string name, string description, float coordinateX, float coordinateY, string type)
+        public Poi(int id,RoutePoint routePoint, string name, string description, float coordinateX, float coordinateY, string type)
         {
             Id = id;
+            RoutePoint = routePoint;
             Name = name;
             Description = description;
             CoordinateX = coordinateX;
