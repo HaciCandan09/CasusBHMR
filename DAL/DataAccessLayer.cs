@@ -284,7 +284,7 @@ namespace CasusExotischNederland.DAL
                 {
                     cmd.Parameters.AddWithValue("@Name", area.Name);
                     cmd.Parameters.AddWithValue("@Type", area.Type);
-                    cmd.Parameters.AddWithValue("@Location", area.Location);
+                    cmd.Parameters.AddWithValue("@Location", area.);
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -322,7 +322,7 @@ namespace CasusExotischNederland.DAL
         }
 
 
-        // Similar CRUD operations can be defined for other entities: PointOfInterest, Area, Observation, Species, Game, Question, Answer, User, and Role.
+        
     }
 }
 
