@@ -32,10 +32,10 @@ namespace CasusExotischNederland.DAL
                         while (reader.Read())
                         {
                             int id = reader.GetInt32(0);
-                            Area areaId = reader.GetString(1);
+                            Area area = reader.GetInt32(1);
                             string name = reader.GetString(2);
                             string description = reader.GetString(3);
-                            routes.Add(new Route(id, areaId, name, description));
+                            routes.Add(new Route(id, area, name, description));
                         }
                     }
                 }
@@ -51,7 +51,7 @@ namespace CasusExotischNederland.DAL
                 string sql = "INSERT INTO Route (areaid, name, description) VALUES (@AreaId, @Name, @Description)";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
-                    cmd.Parameters.AddWithValue("@AreaId", route.AreaId);
+                    cmd.Parameters.AddWithValue("@AreaId", route.Area.Id);
                     cmd.Parameters.AddWithValue("@Name", route.Name);
                     cmd.Parameters.AddWithValue("@Description", route.Description);
                     cmd.ExecuteNonQuery();
@@ -203,7 +203,7 @@ namespace CasusExotischNederland.DAL
                 string sql = "INSERT INTO POI (routepointid, name, description, coordinateX, coordinateY, type) VALUES (@RoutePointId, @Name, @Description, @CoordinateX, @CoordinateY, @Type)";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
-                    cmd.Parameters.AddWithValue("@RoutePointId", poi.RoutePointId);
+                    cmd.Parameters.AddWithValue("@RoutePointId", poi.RoutePoint.Id);
                     cmd.Parameters.AddWithValue("@Name", poi.Name);
                     cmd.Parameters.AddWithValue("@Description", poi.Description);
                     cmd.Parameters.AddWithValue("@CoordinateX", poi.CoordinateX);
@@ -223,7 +223,7 @@ namespace CasusExotischNederland.DAL
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
                     cmd.Parameters.AddWithValue("@Id", poi.Id);
-                    cmd.Parameters.AddWithValue("@RoutePointId", poi.RoutePointId);
+                    cmd.Parameters.AddWithValue("@RoutePointId", poi.RoutePoint.Id);
                     cmd.Parameters.AddWithValue("@Name", poi.Name);
                     cmd.Parameters.AddWithValue("@Description", poi.Description);
                     cmd.Parameters.AddWithValue("@CoordinateX", poi.CoordinateX);
@@ -255,7 +255,7 @@ namespace CasusExotischNederland.DAL
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
-                string sql = "SELECT id, name, type, location FROM Area";
+                string sql = "SELECT ID, Name, Description, CoordinateX, CoordinateY  FROM Area";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -264,9 +264,10 @@ namespace CasusExotischNederland.DAL
                         {
                             int id = reader.GetInt32(0);
                             string name = reader.GetString(1);
-                            string type = reader.GetString(2);
-                            string location = reader.GetString(3);
-                            areas.Add(new Area(id, name, type, location));
+                            string description = reader.GetString(2);
+                            float coordinateX = reader.GetInt32(3);
+                            float coordinateY = reader.GetInt32(4);
+                            areas.Add(new Area(id, name, description, coordinateX, coordinateY));
                         }
                     }
                 }
@@ -297,13 +298,14 @@ namespace CasusExotischNederland.DAL
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
-                string sql = "UPDATE Area SET name = @Name, type = @Type, location = @Location WHERE id = @Id";
+                string sql = "UPDATE Area SET Name = @Name, Description = @Description, CoordinateX = @CoordinateX, CoordinateY = @CoordinateY WHERE id = @ID";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
-                    cmd.Parameters.AddWithValue("@Id", area.Id);
+                    cmd.Parameters.AddWithValue("@ID", area.Id);
                     cmd.Parameters.AddWithValue("@Name", area.Name);
-                    cmd.Parameters.AddWithValue("@Type", area.Type);
-                    cmd.Parameters.AddWithValue("@Location", area.Location);
+                    cmd.Parameters.AddWithValue("@Description", area.Description);
+                    cmd.Parameters.AddWithValue("@CoordinateX", area.CoordinateX);
+                    cmd.Parameters.AddWithValue("@CoordinateÝ", area.CoordinateY);
                     cmd.ExecuteNonQuery();
                 }
             }
