@@ -15,6 +15,9 @@ namespace CasusExotischNederland.Model
         public string Description { get; set; }
         public float CoordinateX { get; set; }
         public float CoordinateY { get; set; }
+        public string Type { get; set; }
+        public string Location { get; set; }
+
 
         public Area(int id, string name, string description, float coordinateX, float coordinateY)
         {
