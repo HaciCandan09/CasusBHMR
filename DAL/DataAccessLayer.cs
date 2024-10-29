@@ -90,6 +90,35 @@ namespace CasusExotischNederland.DAL
             }
         }
 
+        /*
+        public Route GetRouteById(int routeId)
+        {
+            Route route = null;
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "SELECT ID, areaid, name, description FROM Route";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@ID", routeId);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            route = new Route(
+                                reader.GetInt32(0),
+                                reader.GetInt32(1),
+                                reader.GetString(2),
+                                reader.GetString(3)
+                            );
+                        }
+                    }
+                }                    
+            }
+            return route;
+        }
+        */
+
         // RoutePoint CRUD
         public List<RoutePoint> GetRoutePoints()
         {
