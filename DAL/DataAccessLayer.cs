@@ -10,11 +10,11 @@ namespace CasusExotischNederland.DAL
 {
     public class DataAccessLayer
     {
-        private string connectionString = "Data Source=DESKTOP-VTDTUPO; Initial Catalog=TennisverenigingDB; Integrated Security=True;";
+        private string connectionString = "Data Source=Renad; Initial Catalog=ExotischNederland; Integrated Security=True;";
 
         public DataAccessLayer()
         {
-            
+
         }
 
         // Route CRUD
@@ -410,8 +410,53 @@ namespace CasusExotischNederland.DAL
             }
         }
 
+        // Observation CRUD
+        public void CreateObservation(Observation observation)
+        {
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "INSERT INTO Observation (AreaID,SpeciesID,UserID,Name,Date,Location,CoordinateX,CoordinateY) VALUES " +
+                    "(@AreaID, @SpeciesID, @UserID,@Name,@Date,@Location,@CoordinateX,@CoordinateY)";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@AreaId", observation.Area.Id);
+                    cmd.Parameters.AddWithValue("@SpeciesID", observation.Species.Id);
+                    cmd.Parameters.AddWithValue("@UserID", observation.User.Id);
+                    cmd.Parameters.AddWithValue("@Name", observation.Name);
+                    cmd.Parameters.AddWithValue("@Date", DateTime.Now.Date);
+                    cmd.Parameters.AddWithValue("@Location", "test");
+                    cmd.Parameters.AddWithValue("@CoordinateX", observation.CoordinateX);
+                    cmd.Parameters.AddWithValue("@CoordinateY", observation.CoordinateY);
 
-        
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        //Species CRUD
+        public int CreateSpecies(Species species)
+        {
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "INSERT INTO Specie (Name,Category, FotoURL) VALUES " +
+                    "(@Name, @Category, @FotoURL); SELECT SCOPE_IDENTITY()";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@Name", species.Name);
+                    cmd.Parameters.AddWithValue("@Category", species.Category);
+                    cmd.Parameters.AddWithValue("@FotoURL", species.FotoUrl);
+
+
+                    int speciesId = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    connect.Close();
+                    return speciesId;
+                }
+            }
+        }
     }
 }
 

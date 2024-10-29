@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CasusExotischNederland.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,7 @@ namespace CasusExotischNederland.Model
         public float CoordinateX { get; set; }
         public float CoordinateY { get; set; }
         public string FotoUrl { get; set; }
+        public DataAccessLayer Dal { get; set; }
 
         public Observation(int id, Area area, Species species, User user, DateTime date, string name, float coordinateX, float coordinateY, string fotoUrl)
         {
@@ -30,5 +32,15 @@ namespace CasusExotischNederland.Model
             CoordinateY = coordinateY;
             FotoUrl = fotoUrl;
         }
+
+        public void AddObservation()
+        {
+            Dal = new DataAccessLayer();
+            int speciesId = Dal.CreateSpecies(this.Species);
+            this.Species.Id = speciesId;
+            Dal.CreateObservation(this);    
+        }
+
+
     }
 }
