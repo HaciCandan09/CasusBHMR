@@ -425,7 +425,7 @@ namespace CasusExotischNederland.DAL
                     cmd.Parameters.AddWithValue("@UserID", observation.User.Id);
                     cmd.Parameters.AddWithValue("@Name", observation.Name);
                     cmd.Parameters.AddWithValue("@Date", DateTime.Now.Date);
-                    cmd.Parameters.AddWithValue("@Location", "test");
+                    cmd.Parameters.AddWithValue("@Location", observation.Location);
                     cmd.Parameters.AddWithValue("@CoordinateX", observation.CoordinateX);
                     cmd.Parameters.AddWithValue("@CoordinateY", observation.CoordinateY);
 

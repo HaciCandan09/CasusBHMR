@@ -4,7 +4,7 @@ namespace CasusExotischNederland
 {
     internal class Program
     {
-        static void AddObservation()
+        static async Task AddObservation()
         {
             Area area = new Area(1, "area1", "des area1", 11, 12);
             
@@ -22,17 +22,18 @@ namespace CasusExotischNederland
             Console.WriteLine("Enter observation name: ");
             string observationName = Console.ReadLine();
 
-            Console.WriteLine("Enter coordinate x: ");
-            float coordinateX = float.Parse(Console.ReadLine());
+            LocationService locationService = new LocationService();
+            LocationInfo locationInfo = await locationService.GetLocationInfoAsync();
 
-            Console.WriteLine("Enter coordinate y: ");
-            float coordinateY = float.Parse(Console.ReadLine());
+            string location = locationInfo.Region + " " + locationInfo.City;
+            float coordinateX = locationInfo.CoordinateX;
+            float coordinateY = locationInfo.CoordinateY;
 
-            Observation observation = new Observation(1, area, species, user, DateTime.Now.Date, observationName, coordinateX, coordinateY, speciesPhoto);
+            Observation observation = new Observation(1, area, species, user, DateTime.Now.Date, observationName, coordinateX, coordinateY, speciesPhoto,location);
             observation.AddObservation();
 
         }
-        static void StartApp()
+        static async Task StartApp()
         {
 
 
@@ -45,17 +46,15 @@ namespace CasusExotischNederland
                 if (value == 1) { }
                 else if (value == 2) { }
                 else if (value == 3) { }
-                else if (value == 4) { AddObservation(); }
+                else if (value == 4) { await AddObservation(); }
                 else { Console.WriteLine("Invalid input, please try again."); StartApp(); }
             }
             else { Console.WriteLine("Invalid input, please try again."); StartApp(); }
         }
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
 
-            
-
-            StartApp();
+            await StartApp();
         }
     }
 

@@ -15,12 +15,13 @@ namespace CasusExotischNederland.Model
         public User User { get; set; }
         public DateTime Date { get; set; }
         public string Name { get; set; }
+        public string Location { get; set; }
         public float CoordinateX { get; set; }
         public float CoordinateY { get; set; }
         public string FotoUrl { get; set; }
         public DataAccessLayer Dal { get; set; }
 
-        public Observation(int id, Area area, Species species, User user, DateTime date, string name, float coordinateX, float coordinateY, string fotoUrl)
+        public Observation(int id, Area area, Species species, User user, DateTime date, string name, float coordinateX, float coordinateY, string fotoUrl, string location)
         {
             Id = id;
             Area = area;
@@ -31,6 +32,7 @@ namespace CasusExotischNederland.Model
             CoordinateX = coordinateX;
             CoordinateY = coordinateY;
             FotoUrl = fotoUrl;
+            Location = location;
         }
 
         public void AddObservation()
