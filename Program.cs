@@ -38,7 +38,17 @@ namespace CasusExotischNederland
 
 
             Console.WriteLine("Welcome to the app!");
-            Console.WriteLine("Press 1 to go to Profile.\n Press 2 to go to Games. \n Press 3 to go to Routes. \n Press 4 to Add a observation.)");
+            Console.WriteLine("Press 1 to if you are a admin.\n Press 2 if u are a user.");
+            var isAdmin = Console.ReadLine();
+
+            if(isAdmin == "1")
+            {
+                Console.WriteLine("Press 1 to go to Profile.\n Press 2 to go to Games. \n Press 3 to go to Routes. \n Press 4 to Add a observation. \n Press 5 to create Route. \n Press 5 to create Area.\n Press 5 to create Game. \n Press 5 to create POI. \n Press 5 to create RoutePoint.");
+            } else 
+            {
+                Console.WriteLine("Press 1 to go to Profile.\n Press 2 to go to Games. \n Press 3 to go to Routes. \n Press 4 to Add a observation. \n Press 5 to create user.");
+            }
+
             var input = Console.ReadLine();
             int value;
             if (Int32.TryParse(input.ToString(), out value))
