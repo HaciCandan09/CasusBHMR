@@ -6,7 +6,8 @@ namespace CasusExotischNederland
     {
         static async Task AddObservation()
         {
-            Area area = new Area(1, "area1", "des area1", 11, 12);
+            Area area = new Area();
+            
             
             User user = new User(1, "user1", 44, "email1@gmail.com", 23563634);
 
@@ -22,6 +23,15 @@ namespace CasusExotischNederland
             Console.WriteLine("Enter observation name: ");
             string observationName = Console.ReadLine();
 
+            Console.WriteLine("Kies een Area: ");
+            foreach(Area myArea in area.GetAllAreas())
+            {
+                Console.WriteLine(myArea.Id + "  " + myArea.Name);
+            }
+            Console.WriteLine("Vul de area id in: ");
+            int areaId = int.Parse(Console.ReadLine());
+            Area selectedArea = area.GetArea(areaId);
+
             LocationService locationService = new LocationService();
             LocationInfo locationInfo = await locationService.GetLocationInfoAsync();
 
@@ -29,7 +39,7 @@ namespace CasusExotischNederland
             float coordinateX = locationInfo.CoordinateX;
             float coordinateY = locationInfo.CoordinateY;
 
-            Observation observation = new Observation(1, area, species, user, DateTime.Now.Date, observationName, coordinateX, coordinateY, speciesPhoto,location);
+            Observation observation = new Observation(1, selectedArea, species, user, DateTime.Now.Date, observationName, coordinateX, coordinateY, speciesPhoto,location);
             observation.AddObservation();
 
         }
@@ -63,6 +73,7 @@ namespace CasusExotischNederland
         }
         static async Task Main(string[] args)
         {
+
 
             await StartApp();
         }

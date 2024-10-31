@@ -90,33 +90,7 @@ namespace CasusExotischNederland.DAL
             }
         }
 
-        public Area GetAreaById(int areaId)
-        {
-            Area area = null;
-            using (SqlConnection connect = new SqlConnection(connectionString))
-            {
-                connect.Open();
-                string sql = "SELECT ID, Name, Description, CoordinateX, CoordinateY FROM Area";
-                using (SqlCommand cmd = new SqlCommand(sql, connect))
-                {
-                    cmd.Parameters.AddWithValue("@ID", areaId);
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            area = new Area(
-                                reader.GetInt32(0),
-                                reader.GetString(1),
-                                reader.GetString(2),
-                                reader.GetFloat(3),
-                                 reader.GetFloat(4)
-                            );
-                        }
-                    }
-                }
-            }
-            return area;
-        }
+        
 
         /*
         public Route GetRouteById(int routeId)
@@ -334,13 +308,41 @@ namespace CasusExotischNederland.DAL
         }
 
         // Area CRUD
+
+        public Area GetAreaById(int areaId)
+        {
+            Area area = null;
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "SELECT * FROM Area WHERE ID = @ID ";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@ID", areaId);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            area = new Area(
+                                reader.GetInt32(0),
+                                reader.GetString(1),
+                                reader.GetString(2),
+                                reader.GetString(3) 
+                                                              
+                            );
+                        }
+                    }
+                }
+            }
+            return area;
+        }
         public List<Area> GetAreas()
         {
             List<Area> areas = new List<Area>();
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
-                string sql = "SELECT ID, Name, Description, CoordinateX, CoordinateY  FROM Area";
+                string sql = "SELECT ID, Name, Description,Location  FROM Area";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -350,9 +352,9 @@ namespace CasusExotischNederland.DAL
                             int id = reader.GetInt32(0);
                             string name = reader.GetString(1);
                             string description = reader.GetString(2);
-                            float coordinateX = reader.GetInt32(3);
-                            float coordinateY = reader.GetInt32(4);
-                            areas.Add(new Area(id, name, description, coordinateX, coordinateY));
+                            string location = reader.GetString(3);
+                            
+                            areas.Add(new Area(id, name, description, location));
                         }
                     }
                 }
@@ -365,13 +367,13 @@ namespace CasusExotischNederland.DAL
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
-                string sql = "INSERT INTO Area (Name,Description,coordinateX,coordinateY) VALUES (@Name, @Description, @coordinateX,@coordinateY)";
+                string sql = "INSERT INTO Area (Name,Description,Location) VALUES (@Name, @Description, @Location)";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
                     cmd.Parameters.AddWithValue("@Name", area.Name);
                     cmd.Parameters.AddWithValue("@Description", area.Description);
-                    cmd.Parameters.AddWithValue("@CoordinateX", area.CoordinateX);
-                    cmd.Parameters.AddWithValue("@CoordinateY", area.CoordinateY);
+                    cmd.Parameters.AddWithValue("@Location", area.Location);
+                    
                     
                     cmd.ExecuteNonQuery();
                 }
@@ -383,14 +385,14 @@ namespace CasusExotischNederland.DAL
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
-                string sql = "UPDATE Area SET Name = @Name, Description = @Description, CoordinateX = @CoordinateX, CoordinateY = @CoordinateY WHERE id = @ID";
+                string sql = "UPDATE Area SET Name = @Name, Description = @Description, Location = @Location WHERE id = @ID";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
                     cmd.Parameters.AddWithValue("@ID", area.Id);
                     cmd.Parameters.AddWithValue("@Name", area.Name);
                     cmd.Parameters.AddWithValue("@Description", area.Description);
-                    cmd.Parameters.AddWithValue("@CoordinateX", area.CoordinateX);
-                    cmd.Parameters.AddWithValue("@CoordinateÝ", area.CoordinateY);
+                    cmd.Parameters.AddWithValue("@Location", area.Location);
+               
                     cmd.ExecuteNonQuery();
                 }
             }
