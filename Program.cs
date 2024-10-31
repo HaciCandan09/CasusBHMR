@@ -2,7 +2,7 @@
 
 namespace CasusExotischNederland
 {
-    internal class Program
+    internal class Program 
     {
         static async Task CreateUser()
         {
