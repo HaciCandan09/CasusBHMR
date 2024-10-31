@@ -67,6 +67,7 @@ namespace CasusExotischNederland
                 else if (value == 2) { }
                 else if (value == 3) { }
                 else if (value == 4) { await AddObservation(); }
+                
                 else { Console.WriteLine("Invalid input, please try again."); StartApp(); }
             }
             else { Console.WriteLine("Invalid input, please try again."); StartApp(); }

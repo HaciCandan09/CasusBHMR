@@ -17,6 +17,89 @@ namespace CasusExotischNederland.DAL
 
         }
 
+        // User CRUD
+        public List<User> GetAllUser()
+        {
+            List<User> users = new List<User>();
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "SELECT ID,Name,Age,Email,PhoneNumber  FROM User";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+                            string name = reader.GetString(1);
+                            int age = reader.GetInt32(2);
+                            string email = reader.GetString(3);
+                            int phonenumber = reader.GetInt32(4);
+
+                            users.Add(new User(id, name,age,email,phonenumber));
+                        }
+                    }
+                }
+            }
+            return users;
+        }
+
+        public void CreateUser(User user)
+        {
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "INSERT INTO User (Name,Age,Email,PhoneNumber) VALUES (@Name,@Age,@Email,@PhoneNumber)";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@Name", user.Name);
+                    cmd.Parameters.AddWithValue("@Age", user.Age);
+                    cmd.Parameters.AddWithValue("@Email", user.Email);
+                    cmd.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber);
+
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void UpdateUser(User user)
+        {
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "UPDATE User SET Name = @Name, Age = @Age, Email = @Email, PhoneNumber =@PhoneNumber WHERE ID = @ID";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@ID", user.Id);
+                    cmd.Parameters.AddWithValue("@Email", user.Email);
+                    cmd.Parameters.AddWithValue("@Age", user.Age);
+                    cmd.Parameters.AddWithValue("@Email", user.Email);
+                    cmd.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void DeleteUser(int UserId)
+        {
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "DELETE FROM User WHERE ID = @ID";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@ID", UserId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+     
+
+
         // Route CRUD
         public List<Route> GetRoutes()
         {
