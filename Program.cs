@@ -20,6 +20,7 @@ namespace CasusExotischNederland
 
 
             User user = new User(0,userName,UserAge,UserEmail,UserPhoneNumber);
+            user.CreateUser();
             Console.WriteLine("User has been Added");
 
         }
