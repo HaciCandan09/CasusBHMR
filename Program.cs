@@ -4,6 +4,25 @@ namespace CasusExotischNederland
 {
     internal class Program
     {
+        static async Task CreateUser()
+        {
+            Console.WriteLine("Welkom bij het creeren van een User");
+
+            Console.WriteLine("Enter User Name: ");
+            string userName = Console.ReadLine();
+            Console.WriteLine("Enter User Age: ");
+            int UserAge = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Enter User Email: ");
+            string UserEmail = Console.ReadLine();
+            Console.WriteLine("Enter User PhoneNumber: ");
+            int UserPhoneNumber = Convert.ToInt32(Console.ReadLine());
+
+
+
+            User user = new User(0,userName,UserAge,UserEmail,UserPhoneNumber);
+            Console.WriteLine("User has been Added");
+
+        }
         static async Task AddObservation()
         {
             Area area = new Area();
@@ -67,15 +86,14 @@ namespace CasusExotischNederland
                 else if (value == 2) { }
                 else if (value == 3) { }
                 else if (value == 4) { await AddObservation(); }
-                
+                else if (value == 5) { await CreateUser(); }
+
                 else { Console.WriteLine("Invalid input, please try again."); StartApp(); }
             }
             else { Console.WriteLine("Invalid input, please try again."); StartApp(); }
         }
         static async Task Main(string[] args)
         {
-
-
             await StartApp();
         }
     }
