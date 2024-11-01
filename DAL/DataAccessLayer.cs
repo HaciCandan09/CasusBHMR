@@ -10,6 +10,7 @@ namespace CasusExotischNederland.DAL
 {
     public class DataAccessLayer
     {
+
         private string connectionString = "Data Source=HP450-Bjarne; Initial Catalog=ExotischNederland; Integrated Security=True;";
 
         public DataAccessLayer()
@@ -569,6 +570,60 @@ namespace CasusExotischNederland.DAL
                     return speciesId;
                 }
             }
+        }
+
+        public List<Species> GetSpecies()
+        {
+            List<Species> species = new List<Species>();
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "SELECT ID, Name, Category,FotoURL  FROM Specie";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+                            string name = reader.GetString(1);
+                            string category = reader.GetString(2);
+                            string location = reader.GetString(3);
+
+                            species.Add(new Species(id, name, category, location));
+                        }
+                    }
+                }
+            }
+            return species;
+        }
+
+        public Species GetSpeciesById(int speciesId)
+        {
+            Species species = null;
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "SELECT * FROM Specie WHERE ID = @ID ";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@ID", speciesId);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            species = new Species(
+                                reader.GetInt32(0),
+                                reader.GetString(1),
+                                reader.GetString(2),
+                                reader.GetString(3)
+
+                            );
+                        }
+                    }
+                }
+            }
+            return species;
         }
     }
 }
