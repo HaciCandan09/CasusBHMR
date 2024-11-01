@@ -1,4 +1,5 @@
 ﻿using CasusExotischNederland.Model;
+using System.Numerics;
 
 namespace CasusExotischNederland
 {
@@ -62,6 +63,31 @@ namespace CasusExotischNederland
             observation.AddObservation();
 
         }
+
+        static async Task ShowProfile()
+        {
+            User user = new User(1, "Bjarne", 18, "bjarne", 123);
+            user.GetUserbyId(user.Id);
+            Console.WriteLine("This is your ID: " + user.Id, "Name: " + user.Name, "Age: " + user.Age, "Email: " + user.Email, "Phonenumber: " + user.PhoneNumber);
+            Console.WriteLine("Press 1 if you want to return to main menu. \nPress 2 if you want to update your profile. \nPress 3 if you want to delete your profile.");
+            var ProfileAction = Console.ReadLine();
+
+            if (ProfileAction == "1")
+            {
+                Console.WriteLine("Press 1 to go to Profile.\nPress 2 to go to Games. \nPress 3 to go to Routes. \nPress 4 to Add a observation. \nPress 5 to create user.");
+                Console.ReadLine();
+                Program.ShowProfile();
+            }
+            else if (ProfileAction == "2")
+            {
+                user.UpdateUser();
+            }
+            else if (ProfileAction == "3")
+            {
+                user.DeleteUser(user.Id);
+
+            }
+        }
         static async Task StartApp()
         {
 
@@ -82,7 +108,7 @@ namespace CasusExotischNederland
             int value;
             if (Int32.TryParse(input.ToString(), out value))
             {
-                if (value == 1) { }
+                if (value == 1) { await ShowProfile(); }
                 else if (value == 2) { }
                 else if (value == 3) { }
                 else if (value == 4) { await AddObservation(); }

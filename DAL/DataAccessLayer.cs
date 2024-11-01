@@ -10,7 +10,7 @@ namespace CasusExotischNederland.DAL
 {
     public class DataAccessLayer
     {
-        private string connectionString = "Data Source=MSI; Initial Catalog=ExotischNederland; Integrated Security=True;";
+        private string connectionString = "Data Source=HP450-Bjarne; Initial Catalog=ExotischNederland; Integrated Security=True;";
 
         public DataAccessLayer()
         {
@@ -69,11 +69,11 @@ namespace CasusExotischNederland.DAL
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
-                string sql = "UPDATE User SET Name = @Name, Age = @Age, Email = @Email, PhoneNumber =@PhoneNumber WHERE ID = @ID";
+                string sql = "UPDATE [User] SET Name = @Name, Age = @Age, Email = @Email, PhoneNumber =@PhoneNumber WHERE ID = @ID";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
                     cmd.Parameters.AddWithValue("@ID", user.Id);
-                    cmd.Parameters.AddWithValue("@Email", user.Email);
+                    cmd.Parameters.AddWithValue("@Name", user.Name);
                     cmd.Parameters.AddWithValue("@Age", user.Age);
                     cmd.Parameters.AddWithValue("@Email", user.Email);
                     cmd.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber);
@@ -97,7 +97,35 @@ namespace CasusExotischNederland.DAL
             }
         }
 
-     
+        public User GetUserById(int userId)
+        {
+            User user = null;
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "SELECT * FROM [User] WHERE ID = @ID ";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@ID", userId);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            user = new User(
+                                reader.GetInt32(0),
+                                reader.GetString(1),
+                                reader.GetInt32(2),
+                                reader.GetString(3),
+                                reader.GetInt32(4)
+                            );
+                        }
+                    }
+                }
+            }
+            return user;
+        }
+
+
 
 
         // Route CRUD

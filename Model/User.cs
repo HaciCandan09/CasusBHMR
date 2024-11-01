@@ -35,9 +35,9 @@ namespace CasusExotischNederland.Model
         }
 
 
-      public void GetAllUsers()
+        public void GetAllUsers()
         {
-            Dal = new DataAccessLayer();
+             Dal = new DataAccessLayer();
             Dal.GetAllUser();
             
         }
@@ -48,6 +48,23 @@ namespace CasusExotischNederland.Model
             Dal.CreateUser(this);
         }
 
+        public void UpdateUser()
+        {
+            Dal = new DataAccessLayer();
+            Dal.UpdateUser(this);
+        }
+
+        public void DeleteUser(int userId)
+        {
+            Dal = new DataAccessLayer();
+            Dal.DeleteUser(userId);
+        }
+
+        public void GetUserbyId(int userId)
+        {
+            Dal = new DataAccessLayer();
+            Dal.GetUserById(userId);
+        }
     }
 
 
