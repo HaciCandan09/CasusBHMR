@@ -10,7 +10,7 @@ namespace CasusExotischNederland.DAL
 {
     public class DataAccessLayer
     {
-        private string connectionString = "Data Source=Renad; Initial Catalog=ExotischNederland; Integrated Security=True;";
+        private string connectionString = "Data Source=MSI; Initial Catalog=ExotischNederland; Integrated Security=True;";
 
         public DataAccessLayer()
         {
@@ -50,7 +50,7 @@ namespace CasusExotischNederland.DAL
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
-                string sql = "INSERT INTO User (Name,Age,Email,PhoneNumber) VALUES (@Name,@Age,@Email,@PhoneNumber)";
+                string sql = "INSERT INTO [User] (Name,Age,Email,PhoneNumber) VALUES (@Name,@Age,@Email,@PhoneNumber)";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
                     cmd.Parameters.AddWithValue("@Name", user.Name);
