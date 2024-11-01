@@ -26,30 +26,36 @@ namespace CasusExotischNederland
         static async Task AddObservation()
         {
             Area area = new Area();
+            Species species = new Species();
             
             
             User user = new User(1, "user1", 44, "email1@gmail.com", 23563634);
 
-            Console.WriteLine("Enter species name: ");
-            string speciesName = Console.ReadLine();
-            Console.WriteLine("Species photo: ");
-            string speciesPhoto = Console.ReadLine();
-            Console.WriteLine("Enter species category: ");
-            string speciesCategory = Console.ReadLine();
-
-            Species species = new Species(1, speciesName, speciesPhoto, speciesCategory);
-
             Console.WriteLine("Enter observation name: ");
             string observationName = Console.ReadLine();
 
+            Console.WriteLine("Observation photo: ");
+            string observationPhoto = Console.ReadLine();
+
             Console.WriteLine("Kies een Area: ");
-            foreach(Area myArea in area.GetAllAreas())
+            foreach(Area myArea in area.GetAll())
             {
                 Console.WriteLine(myArea.Id + "  " + myArea.Name);
             }
             Console.WriteLine("Vul de area id in: ");
             int areaId = int.Parse(Console.ReadLine());
-            Area selectedArea = area.GetArea(areaId);
+            Area selectedArea = area.Get(areaId);
+
+
+            Console.WriteLine("Kies een Specie: ");
+            foreach (Species mySpecies in species.GetAll())
+            {
+                Console.WriteLine(mySpecies.Id + "  " + mySpecies.Name);
+            }
+            Console.WriteLine("Vul de specie id in: ");
+            int speciesId = int.Parse(Console.ReadLine());
+            Species selectedSpecies = species.Get(speciesId);
+            
 
             LocationService locationService = new LocationService();
             LocationInfo locationInfo = await locationService.GetLocationInfoAsync();
@@ -57,9 +63,13 @@ namespace CasusExotischNederland
             string location = locationInfo.Region + " " + locationInfo.City;
             float coordinateX = locationInfo.CoordinateX;
             float coordinateY = locationInfo.CoordinateY;
+            Console.WriteLine("Locatie ophalen...");
+            Console.WriteLine("Observation location: " + location);
+            Console.WriteLine("Druk 'Enter' om observation op te slaan.");
+            Console.ReadLine();
 
-            Observation observation = new Observation(1, selectedArea, species, user, DateTime.Now.Date, observationName, coordinateX, coordinateY, speciesPhoto,location);
-            observation.AddObservation();
+            Observation observation = new Observation(1, selectedArea, selectedSpecies, user, DateTime.Now.Date, observationName, coordinateX, coordinateY, observationPhoto,location);
+            observation.Add();
 
         }
         static async Task StartApp()

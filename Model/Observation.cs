@@ -35,11 +35,9 @@ namespace CasusExotischNederland.Model
             Location = location;
         }
 
-        public void AddObservation()
+        public void Add()
         {
             Dal = new DataAccessLayer();
-            int speciesId = Dal.CreateSpecies(this.Species);
-            this.Species.Id = speciesId;
             Dal.CreateObservation(this);    
         }
 

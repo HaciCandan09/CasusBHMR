@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CasusExotischNederland.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ namespace CasusExotischNederland.Model
         public string Name { get; set; }
         public string Category { get; set; }    
         public string FotoUrl { get; set; }
+        public DataAccessLayer Dal { get; set; }
 
         public Species(int id, string name, string fotoUrl, string category)
         {
@@ -21,6 +23,23 @@ namespace CasusExotischNederland.Model
             FotoUrl = fotoUrl;
             Observations = new List<Observation>();
             Category = category;
+        }
+        public Species()
+        {
+            
+        }
+
+        public List<Species> GetAll()
+        {
+            Dal = new DataAccessLayer();
+            return Dal.GetSpecies();
+        }
+
+        public Species Get(int id)
+        {
+            Dal = new DataAccessLayer();
+            return Dal.GetSpeciesById(id);
+            
         }
     }
 }

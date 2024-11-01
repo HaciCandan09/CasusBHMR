@@ -32,13 +32,13 @@ namespace CasusExotischNederland.Model
             Observations = new List<Observation>();
         }
 
-        public List<Area> GetAllAreas()
+        public List<Area> GetAll()
         {
             Dal = new DataAccessLayer();
             return Dal.GetAreas();
         }
 
-        public Area GetArea(int id)
+        public Area Get(int id)
         {
             Dal = new DataAccessLayer();
             return Dal.GetAreaById(id);
