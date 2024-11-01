@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CasusExotischNederland.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,18 +14,34 @@ namespace CasusExotischNederland.Model
         public List<Observation> Observations { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public float CoordinateX { get; set; }
-        public float CoordinateY { get; set; }
+        public string Location { get; set; }    
+        public DataAccessLayer Dal { get; set; }
 
-        public Area(int id, string name, string description, float coordinateX, float coordinateY)
+
+        public Area()
+        {
+            
+        }
+        public Area(int id, string name, string description, string location)
         {
             Id = id;
             Name = name;
             Description = description;
-            CoordinateX = coordinateX;
-            CoordinateY = coordinateY;
+            Location = location;
             Routes = new List<Route>();
             Observations = new List<Observation>();
+        }
+
+        public List<Area> GetAllAreas()
+        {
+            Dal = new DataAccessLayer();
+            return Dal.GetAreas();
+        }
+
+        public Area GetArea(int id)
+        {
+            Dal = new DataAccessLayer();
+            return Dal.GetAreaById(id);
         }
     }
 }

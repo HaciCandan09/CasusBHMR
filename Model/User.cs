@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CasusExotischNederland.DAL;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace CasusExotischNederland.Model
         public int Age { get; set; }
         public string Email { get; set; }
         public int PhoneNumber { get; set; }
+        public DataAccessLayer Dal { get; set; }
 
         public User(int id, string name, int age, string email, int phoneNumber)
         {
@@ -31,5 +33,40 @@ namespace CasusExotischNederland.Model
             Roles = new List<Rol>();
             Questions = new List<Question>();
         }
+
+
+        public void GetAllUsers()
+        {
+             Dal = new DataAccessLayer();
+            Dal.GetAllUser();
+            
+        }
+
+        public void CreateUser()
+        {
+            Dal = new DataAccessLayer();
+            Dal.CreateUser(this);
+        }
+
+        public void UpdateUser()
+        {
+            Dal = new DataAccessLayer();
+            Dal.UpdateUser(this);
+        }
+
+        public void DeleteUser(int userId)
+        {
+            Dal = new DataAccessLayer();
+            Dal.DeleteUser(userId);
+        }
+
+        public void GetUserbyId(int userId)
+        {
+            Dal = new DataAccessLayer();
+            Dal.GetUserById(userId);
+        }
     }
+
+
+    
 }
