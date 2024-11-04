@@ -11,7 +11,7 @@ namespace CasusExotischNederland.DAL
     public class DataAccessLayer
     {
 
-        private string connectionString = "Data Source=HP450-Bjarne; Initial Catalog=ExotischNederland; Integrated Security=True;";
+        private string connectionString = "Data Source=.; Initial Catalog=ExotischNederland; Integrated Security=True;";
 
         public DataAccessLayer()
         {
@@ -126,7 +126,54 @@ namespace CasusExotischNederland.DAL
             return user;
         }
 
+        public Rol GetRoleById(int id)
+        {
+            Rol role = null;
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "SELECT * FROM [Role] WHERE ID = @ID ";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@ID", id);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            role = new Rol(
+                                reader.GetInt32(0),
+                                reader.GetString(1)
+                            );
+                        }
+                    }
+                }
+            }
+            return role;
+        }
 
+        public List<Rol> GetRolesByUserId(int userId)
+        {
+            List<Rol> roles = new List<Rol>();
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "SELECT * FROM [RolUser] WHERE UserID = @UserID ";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@UserID", userId);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+                            
+                            roles.Add(GetRoleById(id));
+                        }
+                    }
+                }
+            }
+            return roles;
+        }
 
 
         // Route CRUD

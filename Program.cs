@@ -1,5 +1,7 @@
 ﻿using CasusExotischNederland.Model;
+using System.Buffers;
 using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace CasusExotischNederland
 {
@@ -98,15 +100,138 @@ namespace CasusExotischNederland
 
             }
         }
+
+        static List<string> GenerateShortestRoute(string start, string end)
+        {
+            Console.WriteLine("Generating shortest route...");
+            Dictionary<string, Dictionary<string, int>> graph = new Dictionary<string, Dictionary<string, int>>()
+            {
+                { "a", new Dictionary<string, int> { { "f", 12 }, { "b", 1 }, { "e", 2 } } },
+                { "b", new Dictionary<string, int> { { "a", 1 }, { "e", 6 }, { "c", 2 }, { "d", 4 } } },
+                { "c", new Dictionary<string, int> { { "b", 2 }, { "f", 8 } } },
+                { "d", new Dictionary<string, int> { { "b", 1 }, { "e", 6 }, { "f", 6 } } },
+                { "e", new Dictionary<string, int> { { "a", 2 }, { "b", 6 }, { "d", 6 } } },
+                { "f", new Dictionary<string, int> { { "a", 12 }, { "c", 8 }, { "d", 6 } } }
+            };
+
+            Dictionary<string, int> possibleDistances = new Dictionary<string, int>();
+            int tempDistance = 0;
+            int defDistance = 0;
+            List<string> CurrentRoute = new List<string>();
+
+            foreach (var item in graph[start])
+            {
+                possibleDistances.Add(item.Key, item.Value);
+            }
+
+            tempDistance = possibleDistances.Values.Min();
+            defDistance += possibleDistances.Values.Min();
+            start = possibleDistances.FirstOrDefault(x => x.Value == possibleDistances.Values.Min()).Key;
+
+
+
+
+
+
+            return CurrentRoute;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+           /* var distances = new Dictionary<string, int>();
+            var previousVertices = new Dictionary<string, string>();
+            var priorityQueue = new SortedSet<(int distance, string vertex)>();
+
+            foreach (var vertex in graph.Keys)
+            {
+                distances[vertex] = int.MaxValue;
+                previousVertices[vertex] = null;
+            }
+            distances[start] = 0;
+            priorityQueue.Add((0, start));
+
+            while (priorityQueue.Count > 0)
+            {
+                var (currentDistance, currentVertex) = priorityQueue.Min;
+                priorityQueue.Remove(priorityQueue.Min);
+
+                if (currentDistance > distances[currentVertex])
+                    continue;
+
+                foreach (var (neighbor, weight) in graph[currentVertex])
+                {
+                    int distance = currentDistance + weight;
+
+                    if (distance < distances[neighbor])
+                    {
+                        priorityQueue.Remove((distances[neighbor], neighbor));
+                        distances[neighbor] = distance;
+                        previousVertices[neighbor] = currentVertex;
+                        priorityQueue.Add((distance, neighbor));
+                    }
+                }
+            }
+
+            return (previousVertices);
+        
+
+
+
+    }
+        static List<string> GetShortestPath(Dictionary<string, string> previousVertices, string start, string target)
+        {
+            var path = new List<string>();
+            string currentVertex = target;
+
+            while (currentVertex != null)
+            {
+                path.Add(currentVertex);
+                currentVertex = previousVertices[currentVertex];
+            }
+
+            path.Reverse();
+            return path;
+        }*/
+
+
+
         static async Task StartApp()
         {
-
-
+            GenerateShortestRoute("e","c");
+            //foreach(string item in GetShortestPath(GenerateShortestRoute("a"), "a", "f")) { Console.WriteLine(item); }
             Console.WriteLine("Welcome to the app!");
-            Console.WriteLine("Press 1 to if you are a admin.\nPress 2 if u are a user.");
-            var isAdmin = Console.ReadLine();
+            Console.WriteLine("Please enter your user Id: ");
+            var UserId = Console.ReadLine();
+            User user = new User();
+            List<int> userRols= new List<int>();
+            userRols = user.GetRoles(Convert.ToInt32(UserId));
 
-            if(isAdmin == "1")
+            if (userRols.Contains(1))
             {
                 Console.WriteLine("Press 1 to go to Profile.\nPress 2 to go to Games. \nPress 3 to go to Routes. \nPress 4 to Add a observation. \nPress 5 to create Route. \nPress 5 to create Area.\nPress 5 to create Game. \nPress 5 to create POI. \nPress 5 to create RoutePoint.");
             } else 
