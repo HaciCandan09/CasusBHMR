@@ -65,10 +65,10 @@ namespace CasusExotischNederland.Model
             Dal.DeleteUser(userId);
         }
 
-        public void GetUserbyId(int userId)
+        public User GetUserbyId(int userId)
         {
             Dal = new DataAccessLayer();
-            Dal.GetUserById(userId);
+            return Dal.GetUserById(userId);
         }
 
         public List<int> GetRoles(int id) {

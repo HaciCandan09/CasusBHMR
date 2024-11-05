@@ -7,8 +7,11 @@ using System.Runtime.InteropServices;
 
 namespace CasusExotischNederland
 {
+    
+
     internal class Program
     {
+
         static async Task CreateUser()
         {
             Console.WriteLine("Welkom bij het creeren van een User");
@@ -82,9 +85,7 @@ namespace CasusExotischNederland
         {
             Area area = new Area();
             Species species = new Species();
-
-
-            User user = new User(1, "user1", 44, "email1@gmail.com", 23563634);
+            User user = new User();
 
             Console.WriteLine("Enter observation name: ");
             string observationName = Console.ReadLine();
@@ -123,14 +124,15 @@ namespace CasusExotischNederland
             Console.WriteLine("Druk 'Enter' om observation op te slaan.");
             Console.ReadLine();
 
-            Observation observation = new Observation(1, selectedArea, selectedSpecies, user, DateTime.Now.Date, observationName, coordinateX, coordinateY, observationPhoto, location);
+            Observation observation = new Observation(1, selectedArea, selectedSpecies, user.GetUserbyId(GlobalVariables.CurrentUserId), DateTime.Now.Date, observationName, coordinateX, coordinateY, observationPhoto, location);
             observation.Add();
 
         }
 
-        static async Task ShowProfile()
+        static void ShowProfile()
         {
-            User user = new User(1, "Bjarne", 18, "bjarne", 123);
+            User user = new User();
+            user = user.GetUserbyId(GlobalVariables.CurrentUserId);
             user.GetUserbyId(user.Id);
             Console.WriteLine($"This is your ID: {user.Id}, Name: {user.Name}, Age: {user.Age}, Email: {user.Email}, Phonenumber: {user.PhoneNumber}");
             Console.WriteLine("Press 1 if you want to return to main menu. \nPress 2 if you want to update your profile. \nPress 3 if you want to delete your profile.");
@@ -140,7 +142,7 @@ namespace CasusExotischNederland
             {
                 Console.WriteLine("Press 1 to go to Profile.\nPress 2 to go to Games. \nPress 3 to go to Routes. \nPress 4 to Add a observation. \nPress 5 to create user.");
                 Console.ReadLine();
-                Program.ShowProfile();
+                Program.Menu();
             }
             else if (ProfileAction == "2")
             {
@@ -176,7 +178,7 @@ namespace CasusExotischNederland
                 {
                     user.DeleteUser(user.Id);
                     Console.WriteLine("Your profile has been deleted.");
-                    Program.StartApp();
+                    Program.Menu();
                 }
                 else if (deleteUser == "2")
                 {
@@ -186,8 +188,12 @@ namespace CasusExotischNederland
             }
         }
 
-        static List<string> GenerateShortestRoute(string start, string end)
+        static void GenerateShortestRoute()
         {
+            Console.WriteLine("Enter the start point(a,b,c,d,e,f): ");
+            string start = Console.ReadLine();
+            Console.WriteLine("Enter the end point(a,b,c,d,e,f): ");
+            string end = Console.ReadLine();
             Console.WriteLine("Generating shortest route...");
             Dictionary<string, Dictionary<string, int>> graph = new Dictionary<string, Dictionary<string, int>>()
             {
@@ -204,7 +210,6 @@ namespace CasusExotischNederland
             List<string> unvisitedNodes = graph.Keys.ToList();
 
 
-            // Initialize distances and previous nodes
             foreach (var node in graph.Keys)
             {
                 distances[node] = int.MaxValue;
@@ -214,17 +219,14 @@ namespace CasusExotischNederland
 
             while (unvisitedNodes.Count > 0)
             {
-                // Get the node with the shortest distance
                 string currentNode = unvisitedNodes.OrderBy(node => distances[node]).First();
                 unvisitedNodes.Remove(currentNode);
 
-                // If we reached the end node, stop
                 if (currentNode == end)
                 {
                     break;
                 }
 
-                // Update distances to neighboring nodes
                 foreach (var neighbor in graph[currentNode])
                 {
                     if (!unvisitedNodes.Contains(neighbor.Key))
@@ -241,7 +243,6 @@ namespace CasusExotischNederland
                 }
             }
 
-            // Reconstruct the shortest path
             List<string> path = new List<string>();
             string step = end;
             while (step != null)
@@ -252,98 +253,52 @@ namespace CasusExotischNederland
 
             if (path[0] == start)
             {
-                return path;
+                Console.WriteLine(string.Join(", ", path));
             }
             else
             {
-                return new List<string> { "No path found" };
+                Console.WriteLine( new List<string> { "No path found" });
             }
         
-
-
-
-        /*foreach (var item in graph[start])
-        {
-            newPossibleDistances.Add(item.Key, item.Value);
-        }
-
-        possibleDistances = newPossibleDistances; 
-
-
-
-
-
-        foreach (var item in possibleDistances)
-        {
-            if (currentRoute.Contains(item.Key))
-            {
-                possibleDistances.Remove(item.Key);
-            }
-        }
-
-        currentRoute.Add(start);
-
-        if (currentRoute.Contains(end) && currentRoute.Contains(start))
-        {
-            currentRoute.Add(end);
-            return currentRoute;
-        }
-
-        if (possibleDistances.ContainsKey(start))
-        {
-            possibleDistances.Remove(start);
-        }
-        tempDistance = possibleDistances.Values.Min();
-        defDistance += possibleDistances.Values.Min();
-        start = possibleDistances.FirstOrDefault(x => x.Value == possibleDistances.Values.Min()).Key;
-
-         GenerateShortestRoute(start, end, currentRoute);
-
-
-
-
-        return currentRoute;*/
     }
-        static async Task StartApp()
+        static async Task Menu()
         {
-
-            foreach(string item in GenerateShortestRoute("a", "f"))
-            {
-                Console.WriteLine(item);
-            }
-            //foreach(string item in GetShortestPath(GenerateShortestRoute("a"), "a", "f")) { Console.WriteLine(item); }
-            Console.WriteLine("Welcome to the app!");
-            Console.WriteLine("Please enter your user Id: ");
-            var UserId = Console.ReadLine();
+            
+            
             User user = new User();
             List<int> userRols= new List<int>();
-            userRols = user.GetRoles(Convert.ToInt32(UserId));
+            userRols = user.GetRoles(Convert.ToInt32(GlobalVariables.CurrentUserId));
 
             if (userRols.Contains(1))
             {
                 Console.WriteLine("Press 1 to go to Profile.\nPress 2 to go to Games. \nPress 3 to go to Routes. \nPress 4 to Add a observation. \nPress 5 to create Route. \nPress 5 to create Area.\nPress 5 to create Game. \nPress 5 to create POI. \nPress 5 to create RoutePoint.");
             } else 
             {
-                Console.WriteLine("Press 1 to go to Profile.\nPress 2 to go to Games. \nPress 3 to go to Routes. \nPress 4 to Add a observation. \nPress 5 to create user.");
+                Console.WriteLine("Press 1 to go to Profile.\nPress 2 to go to Games. \nPress 3 to go to Routes. \nPress 4 to Add a observation. \nPress 5 to create user. \nPress 6 to to see the map.");
             }
 
             var input = Console.ReadLine();
             int value;
             if (Int32.TryParse(input.ToString(), out value))
             {
-                if (value == 1) { await ShowProfile(); }
+                if (value == 1) {  ShowProfile(); }
                 else if (value == 2) { await GameLogic(); }
                 else if (value == 3) { }
                 else if (value == 4) { await AddObservation(); }
                 else if (value == 5) { await CreateUser(); }
+                else if (value == 6) { GenerateShortestRoute(); }
 
-                else { Console.WriteLine("Invalid input, please try again."); StartApp(); }
+                else { Console.WriteLine("Invalid input, please try again."); await Menu(); }
             }
-            else { Console.WriteLine("Invalid input, please try again."); StartApp(); }
+            else { Console.WriteLine("Invalid input, please try again."); await Menu(); }
         }
         static async Task Main(string[] args)
         {
-            await StartApp();
+            Console.WriteLine("Welcome to the app!");
+            Console.WriteLine("Please enter your user Id: ");
+            GlobalVariables.CurrentUserId = Int32.Parse(Console.ReadLine());
+            await Menu();
+
         }
     }
 
