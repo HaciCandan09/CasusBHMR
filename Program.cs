@@ -67,15 +67,41 @@ namespace CasusExotischNederland
 
             // Questions
             Console.WriteLine("Game questions");
-
-            foreach (Question myQuestion in selectedGame.Questions)
+            int questionsCounter = 0;
+            List<Question> questions = selectedGame.Questions;
+            
+            while(questionsCounter < questions.Count)
             {
-                Console.WriteLine(myQuestion.QuestionText);
-                foreach (Answer myAnswer in myQuestion.Answers)
+                Question myQuestion = questions[questionsCounter];
+                Console.WriteLine("Give your answer: ");
+                Console.WriteLine($"{myQuestion.QuestionText}");
+                int answersCounter = 1;
+                foreach(Answer answer in myQuestion.Answers)
                 {
-                    Console.WriteLine($"\t{myAnswer.AnswerText}");
+                    Console.WriteLine($"\t{answersCounter} {answer.AnswerText}");
+                    answersCounter++;
                 }
+                int choosenAnswerId = Int32.Parse(Console.ReadLine());
+                Answer choosenAnswer = myQuestion.Answers[choosenAnswerId];
+                if (choosenAnswer.IsCorrect == true)
+                {
+                    Console.WriteLine("Correct answer.");
+                }
+                else
+                {
+                    Console.WriteLine("Wrong answer.");
+                }
+                questionsCounter++; 
             }
+
+            //foreach (Question myQuestion in selectedGame.Questions)
+            //{
+            //    Console.WriteLine(myQuestion.QuestionText);
+            //    foreach (Answer myAnswer in myQuestion.Answers)
+            //    {
+            //        Console.WriteLine($"\t{myAnswer.AnswerText}");
+            //    }
+            //}
 
         }
         static async Task AddObservation()
