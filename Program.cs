@@ -1,5 +1,7 @@
-﻿using CasusExotischNederland.Model;
+﻿using CasusExotischNederland.DAL;
+using CasusExotischNederland.Model;
 using System.Buffers;
+using System.Diagnostics.Metrics;
 using System.Numerics;
 using System.Runtime.InteropServices;
 
@@ -25,6 +27,56 @@ namespace CasusExotischNederland
             user.CreateUser();
             Console.WriteLine("User has been Added");
 
+        }
+
+        static async Task GameLogic()
+        {
+            Area area = new Area();
+            Route route = new Route();
+            Game game = new Game();
+            Question question = new Question();
+
+            // AREA
+            Console.WriteLine("Choose an Area: ");
+            foreach (Area myArea in area.GetAll())
+            {
+                Console.WriteLine(myArea.Id + "  " + myArea.Name);
+            }
+            Console.WriteLine("Enter the area ID:");
+            int areaId = int.Parse(Console.ReadLine());
+            Area selectedArea = area.Get(areaId);
+            // ROUTE
+            Console.WriteLine($"The routs of {selectedArea.Name}\nChoose a route");
+            foreach (Route myRoute in route.GetRoutesByArea(selectedArea.Id))
+            {
+                Console.WriteLine(myRoute.Id + "  " + myRoute.Name);
+            }
+            Console.WriteLine("Enter the route ID:");
+            int routeId = int.Parse(Console.ReadLine());
+            Route selectedRoute = route.Get(routeId);
+            // GAME
+            Console.WriteLine($"The games of {selectedRoute.Name}\nChoose a game");
+            List<Game> games = game.GetGamesByRoute(selectedRoute.Id);
+            foreach (Game myGame in games)
+            {
+                Console.WriteLine(myGame.Id + "  " + myGame.Name);
+            }
+            Console.WriteLine("Enter the game ID:");
+            int gameId = int.Parse(Console.ReadLine());
+            Game selectedGame = games.FirstOrDefault(g => g.Id == gameId);
+
+            // Questions
+            Console.WriteLine("Game questions");
+            
+            foreach (Question myQuestion in selectedGame.Questions)
+            {
+                Console.WriteLine(myQuestion.QuestionText);
+                foreach(Answer myAnswer in myQuestion.Answers)
+                {
+                    Console.WriteLine($"\t{myAnswer.AnswerText}");
+                }
+            }
+            
         }
         static async Task AddObservation()
         {
@@ -222,6 +274,7 @@ namespace CasusExotischNederland
 
         static async Task StartApp()
         {
+
             GenerateShortestRoute("e","c");
             //foreach(string item in GetShortestPath(GenerateShortestRoute("a"), "a", "f")) { Console.WriteLine(item); }
             Console.WriteLine("Welcome to the app!");
@@ -244,7 +297,7 @@ namespace CasusExotischNederland
             if (Int32.TryParse(input.ToString(), out value))
             {
                 if (value == 1) { await ShowProfile(); }
-                else if (value == 2) { }
+                else if (value == 2) { await GameLogic(); }
                 else if (value == 3) { }
                 else if (value == 4) { await AddObservation(); }
                 else if (value == 5) { await CreateUser(); }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CasusExotischNederland.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,12 @@ namespace CasusExotischNederland.Model
         public List<Question> Questions { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public DataAccessLayer Dal { get; set; }
 
+        public Game()
+        {
+            
+        }
         public Game(int id, string name, string description)
         {
             Id = id;
@@ -20,5 +26,12 @@ namespace CasusExotischNederland.Model
             Description = description;
             Questions = new List<Question>();
         }
+
+        public List<Game> GetGamesByRoute(int routeId)
+        {
+            Dal = new DataAccessLayer();
+            return Dal.GetGamesByRouteId(routeId);
+        }
+        
     }
 }

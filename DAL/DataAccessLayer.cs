@@ -11,7 +11,7 @@ namespace CasusExotischNederland.DAL
     public class DataAccessLayer
     {
 
-        private string connectionString = "Data Source=.; Initial Catalog=ExotischNederland; Integrated Security=True;";
+        private string connectionString = "Data Source=RENAD; Initial Catalog=ExotischNederland; Integrated Security=True;";
 
         public DataAccessLayer()
         {
@@ -177,15 +177,45 @@ namespace CasusExotischNederland.DAL
 
 
         // Route CRUD
-        public List<Route> GetRoutes()
+
+
+        public Route GetRouteById(int routeId)
+        {
+            Route route = null;
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "SELECT * FROM Route WHERE ID = @routeID ";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@routeID", routeId);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            route = new Route(
+                                reader.GetInt32(0),
+                                GetAreaById(reader.GetInt32(1)),
+                                reader.GetString(2),
+                                reader.GetString(3)
+                            );
+                        }
+                    }
+                }
+            }
+            return route;
+        }
+
+        public List<Route> GetRoutesByAreaID(int areaId)
         {
             List<Route> routes = new List<Route>();
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
-                string sql = "SELECT id, areaid, name, description FROM Route";
+                string sql = "SELECT id, areaid, name, description FROM Route WHERE areaid = @AreaId";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
+                    cmd.Parameters.AddWithValue("@AreaId", areaId);
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -672,6 +702,129 @@ namespace CasusExotischNederland.DAL
             }
             return species;
         }
+
+        // Game crud
+
+        public List<Game> GetGamesByRouteId(int routeId)
+        {
+            List<Game> games = new List<Game>();
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "SELECT * FROM Game WHERE RouteId = @RouteId";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@RouteId", routeId);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+
+                            string name = reader.GetString(2);
+                            string description = reader.GetString(3);
+                            List<Question> questions = GetQuestionsByGameId(id);
+
+                            Game game = new Game(id, name, description);
+                            game.Questions = questions;
+                            games.Add(game);
+                        }
+                    }
+                }
+            }
+            return games;
+        }
+
+        // Question CRUD
+
+        public Question GetQuestionById(int questionId)
+        {
+            Question question = null;
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "SELECT * FROM Question WHERE ID = @ID ";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@ID", questionId);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            question = new Question(
+                                reader.GetInt32(0),
+                                reader.GetString(2),
+                                reader.GetString(3),
+                                reader.GetInt32(4)
+
+                            );
+                        }
+                    }
+                }
+            }
+            return question;
+        }
+
+
+        public List<Question> GetQuestionsByGameId(int gameId)
+        {
+            List<Question> questions = new List<Question>();
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "SELECT * FROM Question WHERE GameId = @GameId";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@GameId", gameId);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+
+                            string questionText = reader.GetString(2);
+                            string type = reader.GetString(3);
+                            int amountPoints = reader.GetInt32(4);
+
+                            Question question = new Question(id, questionText, type, amountPoints);
+                            question.Answers = GetAnswersByQuestionId(id);
+                            questions.Add(question);
+                        }
+                    }
+                }
+            }
+            return questions;
+        }
+
+        // Answer CRUD
+
+        public List<Answer> GetAnswersByQuestionId(int questionId)
+        {
+            List<Answer> answers = new List<Answer>();
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "SELECT * FROM Answer WHERE QuestionId = @QuestionId";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@QuestionId", questionId);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+
+                            Question question = GetQuestionById(reader.GetInt32(1));
+                            string answerText = reader.GetString(2);
+                            bool isCorrect = reader.GetBoolean(3);
+                            answers.Add(new Answer(id, question, answerText, isCorrect));
+                        }
+                    }
+                }
+            }
+            return answers;
+        }
+
     }
 }
 
