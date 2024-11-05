@@ -132,7 +132,7 @@ namespace CasusExotischNederland
         {
             User user = new User(1, "Bjarne", 18, "bjarne", 123);
             user.GetUserbyId(user.Id);
-            Console.WriteLine("This is your ID: " + user.Id, "Name: " + user.Name, "Age: " + user.Age, "Email: " + user.Email, "Phonenumber: " + user.PhoneNumber);
+            Console.WriteLine($"This is your ID: {user.Id}, Name: {user.Name}, Age: {user.Age}, Email: {user.Email}, Phonenumber: {user.PhoneNumber}");
             Console.WriteLine("Press 1 if you want to return to main menu. \nPress 2 if you want to update your profile. \nPress 3 if you want to delete your profile.");
             var ProfileAction = Console.ReadLine();
 
@@ -144,12 +144,45 @@ namespace CasusExotischNederland
             }
             else if (ProfileAction == "2")
             {
-                user.UpdateUser();
+                Console.WriteLine("Welkom bij het updaten van jouw profiel.");
+                Console.WriteLine("geef de id op");
+                int selectedID = Convert.ToInt32(Console.ReadLine());
+                user.GetUserbyId(user.Id);
+
+                Console.WriteLine("Enter User Name: ");
+                string newUserName = Console.ReadLine();
+
+                Console.WriteLine("Enter User Age: ");
+                int newUserAge = Convert.ToInt32(Console.ReadLine());
+
+                Console.WriteLine("Enter User Email: ");
+                string newUserEmail = Console.ReadLine();
+
+                Console.WriteLine("Enter Phone Number");
+                int newUserPhoneNumber = Convert.ToInt32(Console.ReadLine());
+                
+                User updatedUser = new User(selectedID, newUserName, newUserAge, newUserEmail, newUserPhoneNumber);
+                updatedUser.UpdateUser();
+                Console.WriteLine("User has been updated.");
+                Program.ShowProfile();
             }
             else if (ProfileAction == "3")
             {
-                user.DeleteUser(user.Id);
+                Console.WriteLine("Do you really want to delete your profile?");
+                Console.WriteLine("Press 1 if you want to delete your profile. \nPress 2 to cancel this action.");
+                var deleteUser = Console.ReadLine();
 
+                if (deleteUser == "1")
+                {
+                    user.DeleteUser(user.Id);
+                    Console.WriteLine("Your profile has been deleted.");
+                    Program.StartApp();
+                }
+                else if (deleteUser == "2")
+                {
+                    Console.WriteLine("This action was canceled.");
+                    Program.ShowProfile();
+                }
             }
         }
 
