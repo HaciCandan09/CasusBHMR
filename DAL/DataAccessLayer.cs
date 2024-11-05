@@ -89,7 +89,7 @@ namespace CasusExotischNederland.DAL
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
-                string sql = "DELETE FROM User WHERE ID = @ID";
+                string sql = "DELETE FROM [User] WHERE ID = @ID";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
                     cmd.Parameters.AddWithValue("@ID", UserId);

@@ -66,7 +66,4 @@ namespace CasusExotischNederland.Model
             Dal.GetUserById(userId);
         }
     }
-
-
-    
 }
