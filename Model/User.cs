@@ -21,6 +21,11 @@ namespace CasusExotischNederland.Model
         public int PhoneNumber { get; set; }
         public DataAccessLayer Dal { get; set; }
 
+        public User()
+        {
+                
+        }
+
         public User(int id, string name, int age, string email, int phoneNumber)
         {
             Id = id;
@@ -37,7 +42,7 @@ namespace CasusExotischNederland.Model
 
         public void GetAllUsers()
         {
-             Dal = new DataAccessLayer();
+            Dal = new DataAccessLayer();
             Dal.GetAllUser();
             
         }
@@ -64,6 +69,18 @@ namespace CasusExotischNederland.Model
         {
             Dal = new DataAccessLayer();
             Dal.GetUserById(userId);
+        }
+
+        public List<int> GetRoles(int id) {
+            Dal = new DataAccessLayer();
+            Dal.GetRolesByUserId(id);
+            List<int> UserRoles = new List<int>();
+            foreach(Rol item in Dal.GetRolesByUserId(id))
+            {
+                UserRoles.Add(item.Id);
+            }
+            return UserRoles;
+
         }
     }
 }

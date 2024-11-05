@@ -1,9 +1,13 @@
-﻿using CasusExotischNederland.Model;
+﻿using CasusExotischNederland.DAL;
+using CasusExotischNederland.Model;
+using System.Buffers;
+using System.Diagnostics.Metrics;
 using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace CasusExotischNederland
 {
-    internal class Program 
+    internal class Program
     {
         static async Task CreateUser()
         {
@@ -19,38 +23,94 @@ namespace CasusExotischNederland
             int UserPhoneNumber = Convert.ToInt32(Console.ReadLine());
 
 
-            User user = new User(0,userName,UserAge,UserEmail,UserPhoneNumber);
+            User user = new User(0, userName, UserAge, UserEmail, UserPhoneNumber);
             user.CreateUser();
             Console.WriteLine("User has been Added");
+
+        }
+
+        static async Task GameLogic()
+        {
+            Area area = new Area();
+            Route route = new Route();
+            Game game = new Game();
+            Question question = new Question();
+
+            // AREA
+            Console.WriteLine("Choose an Area: ");
+            foreach (Area myArea in area.GetAll())
+            {
+                Console.WriteLine(myArea.Id + "  " + myArea.Name);
+            }
+            Console.WriteLine("Enter the area ID:");
+            int areaId = int.Parse(Console.ReadLine());
+            Area selectedArea = area.Get(areaId);
+            // ROUTE
+            Console.WriteLine($"The routs of {selectedArea.Name}\nChoose a route");
+            foreach (Route myRoute in route.GetRoutesByArea(selectedArea.Id))
+            {
+                Console.WriteLine(myRoute.Id + "  " + myRoute.Name);
+            }
+            Console.WriteLine("Enter the route ID:");
+            int routeId = int.Parse(Console.ReadLine());
+            Route selectedRoute = route.Get(routeId);
+            // GAME
+            Console.WriteLine($"The games of {selectedRoute.Name}\nChoose a game");
+            List<Game> games = game.GetGamesByRoute(selectedRoute.Id);
+            foreach (Game myGame in games)
+            {
+                Console.WriteLine(myGame.Id + "  " + myGame.Name);
+            }
+            Console.WriteLine("Enter the game ID:");
+            int gameId = int.Parse(Console.ReadLine());
+            Game selectedGame = games.FirstOrDefault(g => g.Id == gameId);
+
+            // Questions
+            Console.WriteLine("Game questions");
+
+            foreach (Question myQuestion in selectedGame.Questions)
+            {
+                Console.WriteLine(myQuestion.QuestionText);
+                foreach (Answer myAnswer in myQuestion.Answers)
+                {
+                    Console.WriteLine($"\t{myAnswer.AnswerText}");
+                }
+            }
 
         }
         static async Task AddObservation()
         {
             Area area = new Area();
-            
-            
+            Species species = new Species();
+
+
             User user = new User(1, "user1", 44, "email1@gmail.com", 23563634);
-
-            Console.WriteLine("Enter species name: ");
-            string speciesName = Console.ReadLine();
-            Console.WriteLine("Species photo: ");
-            string speciesPhoto = Console.ReadLine();
-            Console.WriteLine("Enter species category: ");
-            string speciesCategory = Console.ReadLine();
-
-            Species species = new Species(1, speciesName, speciesPhoto, speciesCategory);
 
             Console.WriteLine("Enter observation name: ");
             string observationName = Console.ReadLine();
 
+            Console.WriteLine("Observation photo: ");
+            string observationPhoto = Console.ReadLine();
+
             Console.WriteLine("Kies een Area: ");
-            foreach(Area myArea in area.GetAllAreas())
+            foreach (Area myArea in area.GetAll())
             {
                 Console.WriteLine(myArea.Id + "  " + myArea.Name);
             }
             Console.WriteLine("Vul de area id in: ");
             int areaId = int.Parse(Console.ReadLine());
-            Area selectedArea = area.GetArea(areaId);
+            Area selectedArea = area.Get(areaId);
+
+
+            Console.WriteLine("Kies een Specie: ");
+            foreach (Species mySpecies in species.GetAll())
+            {
+                Console.WriteLine(mySpecies.Id + "  " + mySpecies.Name);
+            }
+            Console.WriteLine("Vul de specie id in: ");
+            int speciesId = int.Parse(Console.ReadLine());
+            Species selectedSpecies = species.Get(speciesId);
+
 
             LocationService locationService = new LocationService();
             LocationInfo locationInfo = await locationService.GetLocationInfoAsync();
@@ -58,9 +118,13 @@ namespace CasusExotischNederland
             string location = locationInfo.Region + " " + locationInfo.City;
             float coordinateX = locationInfo.CoordinateX;
             float coordinateY = locationInfo.CoordinateY;
+            Console.WriteLine("Locatie ophalen...");
+            Console.WriteLine("Observation location: " + location);
+            Console.WriteLine("Druk 'Enter' om observation op te slaan.");
+            Console.ReadLine();
 
-            Observation observation = new Observation(1, selectedArea, species, user, DateTime.Now.Date, observationName, coordinateX, coordinateY, speciesPhoto,location);
-            observation.AddObservation();
+            Observation observation = new Observation(1, selectedArea, selectedSpecies, user, DateTime.Now.Date, observationName, coordinateX, coordinateY, observationPhoto, location);
+            observation.Add();
 
         }
 
@@ -121,15 +185,141 @@ namespace CasusExotischNederland
                 }
             }
         }
+
+        static List<string> GenerateShortestRoute(string start, string end)
+        {
+            Console.WriteLine("Generating shortest route...");
+            Dictionary<string, Dictionary<string, int>> graph = new Dictionary<string, Dictionary<string, int>>()
+            {
+                { "a", new Dictionary<string, int> { { "f", 12 }, { "b", 1 }, { "e", 2 } } },
+                { "b", new Dictionary<string, int> { { "a", 1 }, { "e", 6 }, { "c", 2 }, { "d", 1 } } },
+                { "c", new Dictionary<string, int> { { "b", 2 }, { "f", 8 } } },
+                { "d", new Dictionary<string, int> { { "b", 1 }, { "e", 6 }, { "f", 6 } } },
+                { "e", new Dictionary<string, int> { { "a", 2 }, { "b", 6 }, { "d", 6 } } },
+                { "f", new Dictionary<string, int> { { "a", 12 }, { "c", 8 }, { "d", 6 } } }
+            };
+
+            Dictionary<string, int> distances = new Dictionary<string, int>();
+            Dictionary<string, string> previousNodes = new Dictionary<string, string>();
+            List<string> unvisitedNodes = graph.Keys.ToList();
+
+
+            // Initialize distances and previous nodes
+            foreach (var node in graph.Keys)
+            {
+                distances[node] = int.MaxValue;
+                previousNodes[node] = null;
+            }
+            distances[start] = 0;
+
+            while (unvisitedNodes.Count > 0)
+            {
+                // Get the node with the shortest distance
+                string currentNode = unvisitedNodes.OrderBy(node => distances[node]).First();
+                unvisitedNodes.Remove(currentNode);
+
+                // If we reached the end node, stop
+                if (currentNode == end)
+                {
+                    break;
+                }
+
+                // Update distances to neighboring nodes
+                foreach (var neighbor in graph[currentNode])
+                {
+                    if (!unvisitedNodes.Contains(neighbor.Key))
+                    {
+                        continue;
+                    }
+
+                    int newDist = distances[currentNode] + neighbor.Value;
+                    if (newDist < distances[neighbor.Key])
+                    {
+                        distances[neighbor.Key] = newDist;
+                        previousNodes[neighbor.Key] = currentNode;
+                    }
+                }
+            }
+
+            // Reconstruct the shortest path
+            List<string> path = new List<string>();
+            string step = end;
+            while (step != null)
+            {
+                path.Insert(0, step);
+                step = previousNodes[step];
+            }
+
+            if (path[0] == start)
+            {
+                return path;
+            }
+            else
+            {
+                return new List<string> { "No path found" };
+            }
+        
+
+
+
+        /*foreach (var item in graph[start])
+        {
+            newPossibleDistances.Add(item.Key, item.Value);
+        }
+
+        possibleDistances = newPossibleDistances; 
+
+
+
+
+
+        foreach (var item in possibleDistances)
+        {
+            if (currentRoute.Contains(item.Key))
+            {
+                possibleDistances.Remove(item.Key);
+            }
+        }
+
+        currentRoute.Add(start);
+
+        if (currentRoute.Contains(end) && currentRoute.Contains(start))
+        {
+            currentRoute.Add(end);
+            return currentRoute;
+        }
+
+        if (possibleDistances.ContainsKey(start))
+        {
+            possibleDistances.Remove(start);
+        }
+        tempDistance = possibleDistances.Values.Min();
+        defDistance += possibleDistances.Values.Min();
+        start = possibleDistances.FirstOrDefault(x => x.Value == possibleDistances.Values.Min()).Key;
+
+         GenerateShortestRoute(start, end, currentRoute);
+
+
+
+
+        return currentRoute;*/
+    }
         static async Task StartApp()
         {
 
-
+            foreach(string item in GenerateShortestRoute("a", "f"))
+            {
+                Console.WriteLine(item);
+            }
+            //foreach(string item in GetShortestPath(GenerateShortestRoute("a"), "a", "f")) { Console.WriteLine(item); }
             Console.WriteLine("Welcome to the app!");
-            Console.WriteLine("Press 1 to if you are a admin.\nPress 2 if u are a user.");
-            var isAdmin = Console.ReadLine();
+            Console.WriteLine("Please enter your user Id: ");
+            var UserId = Console.ReadLine();
+            User user = new User();
+            List<int> userRols= new List<int>();
+            userRols = user.GetRoles(Convert.ToInt32(UserId));
 
-            if(isAdmin == "1")
+            if (userRols.Contains(1))
             {
                 Console.WriteLine("Press 1 to go to Profile.\nPress 2 to go to Games. \nPress 3 to go to Routes. \nPress 4 to Add a observation. \nPress 5 to create Route. \nPress 5 to create Area.\nPress 5 to create Game. \nPress 5 to create POI. \nPress 5 to create RoutePoint.");
             } else 
@@ -142,7 +332,7 @@ namespace CasusExotischNederland
             if (Int32.TryParse(input.ToString(), out value))
             {
                 if (value == 1) { await ShowProfile(); }
-                else if (value == 2) { }
+                else if (value == 2) { await GameLogic(); }
                 else if (value == 3) { }
                 else if (value == 4) { await AddObservation(); }
                 else if (value == 5) { await CreateUser(); }

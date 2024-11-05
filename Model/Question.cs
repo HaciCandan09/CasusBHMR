@@ -15,6 +15,11 @@ namespace CasusExotischNederland.Model
         public string Type { get; set; }
         public int AmountOfPoints { get; set; }
 
+        public Question()
+        {
+            
+        }
+
         public Question(int id, string questionText, string type, int amountOfPoints)
         {
             Id = id;
