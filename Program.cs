@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace CasusExotischNederland
 {
-    internal class Program 
+    internal class Program
     {
         static async Task CreateUser()
         {
@@ -23,7 +23,7 @@ namespace CasusExotischNederland
             int UserPhoneNumber = Convert.ToInt32(Console.ReadLine());
 
 
-            User user = new User(0,userName,UserAge,UserEmail,UserPhoneNumber);
+            User user = new User(0, userName, UserAge, UserEmail, UserPhoneNumber);
             user.CreateUser();
             Console.WriteLine("User has been Added");
 
@@ -67,23 +67,23 @@ namespace CasusExotischNederland
 
             // Questions
             Console.WriteLine("Game questions");
-            
+
             foreach (Question myQuestion in selectedGame.Questions)
             {
                 Console.WriteLine(myQuestion.QuestionText);
-                foreach(Answer myAnswer in myQuestion.Answers)
+                foreach (Answer myAnswer in myQuestion.Answers)
                 {
                     Console.WriteLine($"\t{myAnswer.AnswerText}");
                 }
             }
-            
+
         }
         static async Task AddObservation()
         {
             Area area = new Area();
             Species species = new Species();
-            
-            
+
+
             User user = new User(1, "user1", 44, "email1@gmail.com", 23563634);
 
             Console.WriteLine("Enter observation name: ");
@@ -93,7 +93,7 @@ namespace CasusExotischNederland
             string observationPhoto = Console.ReadLine();
 
             Console.WriteLine("Kies een Area: ");
-            foreach(Area myArea in area.GetAll())
+            foreach (Area myArea in area.GetAll())
             {
                 Console.WriteLine(myArea.Id + "  " + myArea.Name);
             }
@@ -110,7 +110,7 @@ namespace CasusExotischNederland
             Console.WriteLine("Vul de specie id in: ");
             int speciesId = int.Parse(Console.ReadLine());
             Species selectedSpecies = species.Get(speciesId);
-            
+
 
             LocationService locationService = new LocationService();
             LocationInfo locationInfo = await locationService.GetLocationInfoAsync();
@@ -123,7 +123,7 @@ namespace CasusExotischNederland
             Console.WriteLine("Druk 'Enter' om observation op te slaan.");
             Console.ReadLine();
 
-            Observation observation = new Observation(1, selectedArea, selectedSpecies, user, DateTime.Now.Date, observationName, coordinateX, coordinateY, observationPhoto,location);
+            Observation observation = new Observation(1, selectedArea, selectedSpecies, user, DateTime.Now.Date, observationName, coordinateX, coordinateY, observationPhoto, location);
             observation.Add();
 
         }
@@ -159,123 +159,125 @@ namespace CasusExotischNederland
             Dictionary<string, Dictionary<string, int>> graph = new Dictionary<string, Dictionary<string, int>>()
             {
                 { "a", new Dictionary<string, int> { { "f", 12 }, { "b", 1 }, { "e", 2 } } },
-                { "b", new Dictionary<string, int> { { "a", 1 }, { "e", 6 }, { "c", 2 }, { "d", 4 } } },
+                { "b", new Dictionary<string, int> { { "a", 1 }, { "e", 6 }, { "c", 2 }, { "d", 1 } } },
                 { "c", new Dictionary<string, int> { { "b", 2 }, { "f", 8 } } },
                 { "d", new Dictionary<string, int> { { "b", 1 }, { "e", 6 }, { "f", 6 } } },
                 { "e", new Dictionary<string, int> { { "a", 2 }, { "b", 6 }, { "d", 6 } } },
                 { "f", new Dictionary<string, int> { { "a", 12 }, { "c", 8 }, { "d", 6 } } }
             };
 
-            Dictionary<string, int> possibleDistances = new Dictionary<string, int>();
-            int tempDistance = 0;
-            int defDistance = 0;
-            List<string> CurrentRoute = new List<string>();
+            Dictionary<string, int> distances = new Dictionary<string, int>();
+            Dictionary<string, string> previousNodes = new Dictionary<string, string>();
+            List<string> unvisitedNodes = graph.Keys.ToList();
 
-            foreach (var item in graph[start])
+
+            // Initialize distances and previous nodes
+            foreach (var node in graph.Keys)
             {
-                possibleDistances.Add(item.Key, item.Value);
-            }
-
-            tempDistance = possibleDistances.Values.Min();
-            defDistance += possibleDistances.Values.Min();
-            start = possibleDistances.FirstOrDefault(x => x.Value == possibleDistances.Values.Min()).Key;
-
-
-
-
-
-
-            return CurrentRoute;
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-           /* var distances = new Dictionary<string, int>();
-            var previousVertices = new Dictionary<string, string>();
-            var priorityQueue = new SortedSet<(int distance, string vertex)>();
-
-            foreach (var vertex in graph.Keys)
-            {
-                distances[vertex] = int.MaxValue;
-                previousVertices[vertex] = null;
+                distances[node] = int.MaxValue;
+                previousNodes[node] = null;
             }
             distances[start] = 0;
-            priorityQueue.Add((0, start));
 
-            while (priorityQueue.Count > 0)
+            while (unvisitedNodes.Count > 0)
             {
-                var (currentDistance, currentVertex) = priorityQueue.Min;
-                priorityQueue.Remove(priorityQueue.Min);
+                // Get the node with the shortest distance
+                string currentNode = unvisitedNodes.OrderBy(node => distances[node]).First();
+                unvisitedNodes.Remove(currentNode);
 
-                if (currentDistance > distances[currentVertex])
-                    continue;
-
-                foreach (var (neighbor, weight) in graph[currentVertex])
+                // If we reached the end node, stop
+                if (currentNode == end)
                 {
-                    int distance = currentDistance + weight;
+                    break;
+                }
 
-                    if (distance < distances[neighbor])
+                // Update distances to neighboring nodes
+                foreach (var neighbor in graph[currentNode])
+                {
+                    if (!unvisitedNodes.Contains(neighbor.Key))
                     {
-                        priorityQueue.Remove((distances[neighbor], neighbor));
-                        distances[neighbor] = distance;
-                        previousVertices[neighbor] = currentVertex;
-                        priorityQueue.Add((distance, neighbor));
+                        continue;
+                    }
+
+                    int newDist = distances[currentNode] + neighbor.Value;
+                    if (newDist < distances[neighbor.Key])
+                    {
+                        distances[neighbor.Key] = newDist;
+                        previousNodes[neighbor.Key] = currentNode;
                     }
                 }
             }
 
-            return (previousVertices);
+            // Reconstruct the shortest path
+            List<string> path = new List<string>();
+            string step = end;
+            while (step != null)
+            {
+                path.Insert(0, step);
+                step = previousNodes[step];
+            }
+
+            if (path[0] == start)
+            {
+                return path;
+            }
+            else
+            {
+                return new List<string> { "No path found" };
+            }
         
 
 
 
-    }
-        static List<string> GetShortestPath(Dictionary<string, string> previousVertices, string start, string target)
+        /*foreach (var item in graph[start])
         {
-            var path = new List<string>();
-            string currentVertex = target;
+            newPossibleDistances.Add(item.Key, item.Value);
+        }
 
-            while (currentVertex != null)
+        possibleDistances = newPossibleDistances; 
+
+
+
+
+
+        foreach (var item in possibleDistances)
+        {
+            if (currentRoute.Contains(item.Key))
             {
-                path.Add(currentVertex);
-                currentVertex = previousVertices[currentVertex];
+                possibleDistances.Remove(item.Key);
             }
+        }
 
-            path.Reverse();
-            return path;
-        }*/
+        currentRoute.Add(start);
+
+        if (currentRoute.Contains(end) && currentRoute.Contains(start))
+        {
+            currentRoute.Add(end);
+            return currentRoute;
+        }
+
+        if (possibleDistances.ContainsKey(start))
+        {
+            possibleDistances.Remove(start);
+        }
+        tempDistance = possibleDistances.Values.Min();
+        defDistance += possibleDistances.Values.Min();
+        start = possibleDistances.FirstOrDefault(x => x.Value == possibleDistances.Values.Min()).Key;
+
+         GenerateShortestRoute(start, end, currentRoute);
 
 
 
+
+        return currentRoute;*/
+    }
         static async Task StartApp()
         {
 
-            GenerateShortestRoute("e","c");
+            foreach(string item in GenerateShortestRoute("a", "f"))
+            {
+                Console.WriteLine(item);
+            }
             //foreach(string item in GetShortestPath(GenerateShortestRoute("a"), "a", "f")) { Console.WriteLine(item); }
             Console.WriteLine("Welcome to the app!");
             Console.WriteLine("Please enter your user Id: ");
