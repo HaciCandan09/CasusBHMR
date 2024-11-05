@@ -56,7 +56,7 @@ namespace CasusExotischNederland
             }
             Console.WriteLine("Enter the route ID:");
             int routeId = int.Parse(Console.ReadLine());
-            Route selectedRoute = route.Get(routeId);
+            Route selectedRoute = route.GetById(routeId);
             // GAME
             Console.WriteLine($"The games of {selectedRoute.Name}\nChoose a game");
             List<Game> games = game.GetGamesByRoute(selectedRoute.Id);
