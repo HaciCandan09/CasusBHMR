@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CasusExotischNederland.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,8 @@ namespace CasusExotischNederland.Model
         public int Id { get; set; }
         public List<User> Users { get; set; }
         public string Name { get; set; }
+        public DataAccessLayer Dal { get; set; }
+
 
         public Rol(int id, string name)
         {
@@ -18,5 +21,12 @@ namespace CasusExotischNederland.Model
             Name = name;
             Users = new List<User>();
         }
+
+        public void GetById(int id)
+        {
+            Dal = new DataAccessLayer();
+            Dal.GetRoleById(id);
+        }
+
     }
 }

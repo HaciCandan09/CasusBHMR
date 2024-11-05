@@ -34,7 +34,7 @@ namespace CasusExotischNederland.Model
         }
 
 
-        public Route Get(int routeId)
+        public Route GetById(int routeId)
         {
             Dal = new DataAccessLayer();
             return Dal.GetRouteById(routeId);
