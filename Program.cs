@@ -35,6 +35,10 @@ namespace CasusExotischNederland
             Route route = new Route();
             Game game = new Game();
             Question question = new Question();
+            User user = new User();
+
+            // Current User  DEZE MOET NOG GEIIMPLEMENTEERD WORDEN
+            User currentUser = user.GetUserbyId(1);
 
             // AREA
             Console.WriteLine("Choose an Area: ");
@@ -82,7 +86,7 @@ namespace CasusExotischNederland
                     answersCounter++;
                 }
                 int choosenAnswerId = Int32.Parse(Console.ReadLine());
-                Answer choosenAnswer = myQuestion.Answers[choosenAnswerId];
+                Answer choosenAnswer = myQuestion.Answers[choosenAnswerId-1];
                 if (choosenAnswer.IsCorrect == true)
                 {
                     Console.WriteLine("Correct answer.");
@@ -91,7 +95,11 @@ namespace CasusExotischNederland
                 {
                     Console.WriteLine("Wrong answer.");
                 }
-                questionsCounter++; 
+                questionsCounter++;
+
+                // gegeven antwoord opslaan
+                game.SaveGivenAnswer(currentUser, myQuestion, choosenAnswer);
+
             }
 
             //foreach (Question myQuestion in selectedGame.Questions)
