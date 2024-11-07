@@ -35,11 +35,14 @@ namespace CasusExotischNederland.Model
             return Dal.GetSpecies();
         }
 
-        public Species Get(int id)
+        public Species GetById(int id)
         {
             Dal = new DataAccessLayer();
             return Dal.GetSpeciesById(id);
-            
         }
+
+        public void Create() { }
+        public void Update() { }
+        public void Delete() { }
     }
 }

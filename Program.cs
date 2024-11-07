@@ -15,7 +15,6 @@ namespace CasusExotischNederland
         static async Task CreateUser()
         {
             Console.WriteLine("Welkom bij het creeren van een User");
-
             Console.WriteLine("Enter User Name: ");
             string userName = Console.ReadLine();
             Console.WriteLine("Enter User Age: ");
@@ -24,10 +23,8 @@ namespace CasusExotischNederland
             string UserEmail = Console.ReadLine();
             Console.WriteLine("Enter User PhoneNumber: ");
             int UserPhoneNumber = Convert.ToInt32(Console.ReadLine());
-
-
             User user = new User(0, userName, UserAge, UserEmail, UserPhoneNumber);
-            user.CreateUser();
+            user.Create();
             Console.WriteLine("User has been Added");
 
         }
@@ -47,7 +44,7 @@ namespace CasusExotischNederland
             }
             Console.WriteLine("Enter the area ID:");
             int areaId = int.Parse(Console.ReadLine());
-            Area selectedArea = area.Get(areaId);
+            Area selectedArea = area.GetById(areaId);
             // ROUTE
             Console.WriteLine($"The routs of {selectedArea.Name}\nChoose a route");
             foreach (Route myRoute in route.GetRoutesByArea(selectedArea.Id))
@@ -79,8 +76,8 @@ namespace CasusExotischNederland
                     Console.WriteLine($"\t{myAnswer.AnswerText}");
                 }
             }
-
         }
+
         static async Task AddObservation()
         {
             Area area = new Area();
@@ -98,20 +95,20 @@ namespace CasusExotischNederland
             {
                 Console.WriteLine(myArea.Id + "  " + myArea.Name);
             }
+
             Console.WriteLine("Vul de area id in: ");
             int areaId = int.Parse(Console.ReadLine());
-            Area selectedArea = area.Get(areaId);
-
-
+            Area selectedArea = area.GetById(areaId);
             Console.WriteLine("Kies een Specie: ");
+
             foreach (Species mySpecies in species.GetAll())
             {
                 Console.WriteLine(mySpecies.Id + "  " + mySpecies.Name);
             }
+
             Console.WriteLine("Vul de specie id in: ");
             int speciesId = int.Parse(Console.ReadLine());
-            Species selectedSpecies = species.Get(speciesId);
-
+            Species selectedSpecies = species.GetById(speciesId);
 
             LocationService locationService = new LocationService();
             LocationInfo locationInfo = await locationService.GetLocationInfoAsync();
@@ -125,7 +122,7 @@ namespace CasusExotischNederland
             Console.ReadLine();
 
             Observation observation = new Observation(1, selectedArea, selectedSpecies, user.GetUserbyId(GlobalVariables.CurrentUserId), DateTime.Now.Date, observationName, coordinateX, coordinateY, observationPhoto, location);
-            observation.Add();
+            observation.Create();
 
         }
 
@@ -164,7 +161,7 @@ namespace CasusExotischNederland
                 int newUserPhoneNumber = Convert.ToInt32(Console.ReadLine());
                 
                 User updatedUser = new User(selectedID, newUserName, newUserAge, newUserEmail, newUserPhoneNumber);
-                updatedUser.UpdateUser();
+                updatedUser.Update();
                 Console.WriteLine("User has been updated.");
                 Program.ShowProfile();
             }
@@ -176,7 +173,7 @@ namespace CasusExotischNederland
 
                 if (deleteUser == "1")
                 {
-                    user.DeleteUser(user.Id);
+                    user.Delete(user.Id);
                     Console.WriteLine("Your profile has been deleted.");
                     Program.Menu();
                 }
@@ -267,7 +264,7 @@ namespace CasusExotischNederland
             
             User user = new User();
             List<int> userRols= new List<int>();
-            userRols = user.GetRoles(Convert.ToInt32(GlobalVariables.CurrentUserId));
+            userRols = user.GetRolesById(Convert.ToInt32(GlobalVariables.CurrentUserId));
 
             if (userRols.Contains(1))
             {

@@ -39,10 +39,16 @@ namespace CasusExotischNederland.Model
             Dal = new DataAccessLayer();
             return Dal.GetRouteById(routeId);
         }
+
         public List<Route> GetRoutesByArea(int areaId)
         {
             Dal = new DataAccessLayer();
             return Dal.GetRoutesByAreaID(areaId);
         }
+
+        public void GetAll() { }
+        public void Create() { }
+        public void Update() { }
+        public void Delete() { }
     }
 }

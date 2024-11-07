@@ -28,5 +28,9 @@ namespace CasusExotischNederland.Model
             Dal.GetRoleById(id);
         }
 
+        public void GetAll() { }
+        public void Create() { }
+        public void Update() { }
+        public void Delete() { }
     }
 }

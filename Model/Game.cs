@@ -32,6 +32,10 @@ namespace CasusExotischNederland.Model
             Dal = new DataAccessLayer();
             return Dal.GetGamesByRouteId(routeId);
         }
-        
+
+        public void GetAll() { }
+        public void Create() { }
+        public void Update() { }
+        public void Delete() { }
     }
 }

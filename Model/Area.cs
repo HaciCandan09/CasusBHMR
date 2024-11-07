@@ -38,10 +38,14 @@ namespace CasusExotischNederland.Model
             return Dal.GetAreas();
         }
 
-        public Area Get(int id)
+        public Area GetById(int id)
         {
             Dal = new DataAccessLayer();
             return Dal.GetAreaById(id);
         }
+
+        public void Create() { }
+        public void Update() { }
+        public void Delete() { }
     }
 }
