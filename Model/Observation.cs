@@ -35,12 +35,14 @@ namespace CasusExotischNederland.Model
             Location = location;
         }
 
-        public void Add()
+        public void Create()
         {
             Dal = new DataAccessLayer();
             Dal.CreateObservation(this);    
         }
 
-
+        public void GetAll() { }
+        public void Update() { }
+        public void Delete() { }
     }
 }

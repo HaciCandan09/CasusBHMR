@@ -40,26 +40,26 @@ namespace CasusExotischNederland.Model
         }
 
 
-        public void GetAllUsers()
+        public void GetAll()
         {
             Dal = new DataAccessLayer();
             Dal.GetAllUser();
             
         }
 
-        public void CreateUser()
+        public void Create()
         {
             Dal = new DataAccessLayer();
             Dal.CreateUser(this);
         }
 
-        public void UpdateUser()
+        public void Update()
         {
             Dal = new DataAccessLayer();
             Dal.UpdateUser(this);
         }
 
-        public void DeleteUser(int userId)
+        public void Delete(int userId)
         {
             Dal = new DataAccessLayer();
             Dal.DeleteUser(userId);
@@ -69,10 +69,9 @@ namespace CasusExotischNederland.Model
         {
             Dal = new DataAccessLayer();
             return Dal.GetUserById(userId);
-            
         }
 
-        public List<int> GetRoles(int id) {
+        public List<int> GetRolesById(int id) {
             Dal = new DataAccessLayer();
             Dal.GetRolesByUserId(id);
             List<int> UserRoles = new List<int>();
@@ -81,7 +80,6 @@ namespace CasusExotischNederland.Model
                 UserRoles.Add(item.Id);
             }
             return UserRoles;
-
         }
     }
 }

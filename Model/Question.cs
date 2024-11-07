@@ -29,5 +29,10 @@ namespace CasusExotischNederland.Model
             Answers = new List<Answer>();
             Users = new List<User>();
         }
+
+        public void GetAll() { }
+        public void Create() { }
+        public void Update() { }
+        public void Delete() { }
     }
 }
