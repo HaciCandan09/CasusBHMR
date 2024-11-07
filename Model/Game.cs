@@ -37,5 +37,11 @@ namespace CasusExotischNederland.Model
         public void Create() { }
         public void Update() { }
         public void Delete() { }
+        
+        public void SaveGivenAnswer(User user , Question question , Answer answer)
+        {
+            Dal = new DataAccessLayer();
+            Dal.CreateUserQuestion(user, question, answer);
+        }
     }
 }

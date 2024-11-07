@@ -825,6 +825,25 @@ namespace CasusExotischNederland.DAL
             return answers;
         }
 
+        // UserQuestion 
+
+        public void CreateUserQuestion(User user , Question question, Answer answer)
+        {
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "INSERT INTO USRQuest (UserID,QuestionID,GivenAnswer) VALUES (@UserID, @QuestionID, @GivenAnswer)";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@UserID", user.Id);
+                    cmd.Parameters.AddWithValue("@QuestionID", question.Id);
+                    cmd.Parameters.AddWithValue("@GivenAnswer", answer.AnswerText);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
     }
 }
 
