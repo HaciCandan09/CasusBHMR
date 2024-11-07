@@ -13,7 +13,7 @@ namespace CasusExotischNederland
     {
         static void CreateUser()
         {
-            Console.WriteLine("Welkom bij het creeren van een User");
+            Console.WriteLine("Welcome to creating a user.");
             Console.WriteLine("Enter User Name: ");
             string userName = Console.ReadLine();
             Console.WriteLine("Enter User Age: ");
@@ -23,7 +23,7 @@ namespace CasusExotischNederland
             Console.WriteLine("Enter User PhoneNumber: ");
             int UserPhoneNumber = Convert.ToInt32(Console.ReadLine());
             User user = new User(0, userName, UserAge, UserEmail, UserPhoneNumber);
-            user.Create();
+            GlobalVariables.CurrentUserId = user.Create();
             Console.WriteLine("User has been Added");
 
             Console.WriteLine("Press 'Enter' to go to the main menu.");
@@ -187,8 +187,8 @@ namespace CasusExotischNederland
             }
             else if (ProfileAction == "2")
             {
-                Console.WriteLine("Welkom bij het updaten van jouw profiel.");
-                Console.WriteLine("geef de id op");
+                Console.WriteLine("Welcome to updating your profile.");
+                Console.WriteLine("Enter your ID:");
                 int selectedID = Convert.ToInt32(Console.ReadLine());
                 user.GetUserbyId(user.Id);
 
@@ -219,7 +219,7 @@ namespace CasusExotischNederland
                 {
                     user.Delete(user.Id);
                     Console.WriteLine("Your profile has been deleted.");
-                    Menu();
+                    CreateUser();
                 }
                 else if (deleteUser == "2")
                 {
@@ -351,9 +351,21 @@ namespace CasusExotischNederland
         static async Task Main(string[] args)
         {
             Console.WriteLine("Welcome to the app!");
-            Console.WriteLine("Please enter your user Id: ");
-            GlobalVariables.CurrentUserId = Int32.Parse(Console.ReadLine());
-            Menu();
+            Console.WriteLine("Press 1 if you want to create a user. \nPress 2 if you want to login.");
+            var LoginAction = Console.ReadLine();
+
+            if (LoginAction == "1")
+            {
+                CreateUser();
+                Console.WriteLine($"This is your ID: {GlobalVariables.CurrentUserId}");
+                Menu();
+            }
+            else if (LoginAction == "2")
+            {
+                Console.WriteLine("Please enter your user Id: ");
+                GlobalVariables.CurrentUserId = Int32.Parse(Console.ReadLine());
+                Menu();
+            }            
         }
     }
 }

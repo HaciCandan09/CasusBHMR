@@ -46,7 +46,7 @@ namespace CasusExotischNederland.DAL
             return users;
         }
 
-        public void CreateUser(User user)
+        public int CreateUser(User user)
         {
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
@@ -58,9 +58,10 @@ namespace CasusExotischNederland.DAL
                     cmd.Parameters.AddWithValue("@Age", user.Age);
                     cmd.Parameters.AddWithValue("@Email", user.Email);
                     cmd.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber);
-
+                    int userId = (int)cmd.ExecuteScalar();
 
                     cmd.ExecuteNonQuery();
+                    return userId;
                 }
             }
         }

@@ -47,10 +47,11 @@ namespace CasusExotischNederland.Model
             
         }
 
-        public void Create()
+        public int Create()
         {
             Dal = new DataAccessLayer();
             Dal.CreateUser(this);
+            return Id;
         }
 
         public void Update()
