@@ -25,6 +25,11 @@ namespace CasusExotischNederland.Model
             CoordinateY = coordinateY;
             Routes = new List<Route>();
         }
+
+        public void GetAll() { }
+        public void Create() { }
+        public void Update() { }
+        public void Delete() { }
     }
 }
 
