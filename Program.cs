@@ -26,6 +26,11 @@ namespace CasusExotischNederland
             user.Create();
             Console.WriteLine("User has been Added");
 
+            Console.WriteLine("Press 'Enter' to go to the main menu.");
+            Console.ReadLine();
+            Console.Clear();
+            Menu();
+
         }
 
         static void GameLogic()
@@ -37,7 +42,7 @@ namespace CasusExotischNederland
             User user = new User();
 
             // Current User  DEZE MOET NOG GEIIMPLEMENTEERD WORDEN
-            User currentUser = user.GetUserbyId(1);
+            User currentUser = user.GetUserbyId(GlobalVariables.CurrentUserId);
 
             // AREA
             Console.WriteLine("Select an area:");
@@ -72,8 +77,8 @@ namespace CasusExotischNederland
             Console.WriteLine("Game questions");
             int questionsCounter = 0;
             List<Question> questions = selectedGame.Questions;
-            
-            while(questionsCounter < questions.Count)
+            int points = 0;
+            while (questionsCounter < questions.Count)
             {
                 Question myQuestion = questions[questionsCounter];
                 Console.WriteLine("Provide your answer:");
@@ -86,20 +91,29 @@ namespace CasusExotischNederland
                 }
                 int choosenAnswerId = Int32.Parse(Console.ReadLine());
                 Answer choosenAnswer = myQuestion.Answers[choosenAnswerId-1];
+                
                 if (choosenAnswer.IsCorrect == true)
                 {
                     Console.WriteLine("Correct answer!");
+                    points += myQuestion.AmountOfPoints;
                 }
                 else
                 {
-                    Console.WriteLine("Incorrect answer.");
+                    Answer answer = myQuestion.Answers.FirstOrDefault(a => a.IsCorrect);
+                    Console.WriteLine($"Incorrect answer.\nThe correct answer is {answer.AnswerText}");
+
                 }
                 questionsCounter++;
 
                 // gegeven antwoord opslaan
                 game.SaveGivenAnswer(currentUser, myQuestion, choosenAnswer);
-
             }
+            Console.WriteLine($"Game completed!\nYour score is: {points}");
+            Console.WriteLine("Press 'Enter' to go to the main menu.");
+            Console.ReadLine();
+            Console.Clear();
+
+            Menu();
         }
 
         static async Task AddObservation()
@@ -149,6 +163,10 @@ namespace CasusExotischNederland
             observation.Create();
 
             Console.WriteLine("Observation has been successfully added.");
+            Console.WriteLine("Press 'Enter' to go to the main menu.");
+            Console.ReadLine();
+            Console.Clear();
+            Menu();
 
         }
 
@@ -189,7 +207,7 @@ namespace CasusExotischNederland
                 User updatedUser = new User(selectedID, newUserName, newUserAge, newUserEmail, newUserPhoneNumber);
                 updatedUser.Update();
                 Console.WriteLine("User has been updated.");
-                Program.ShowProfile();
+                ShowProfile();
             }
             else if (ProfileAction == "3")
             {
@@ -201,12 +219,12 @@ namespace CasusExotischNederland
                 {
                     user.Delete(user.Id);
                     Console.WriteLine("Your profile has been deleted.");
-                    Program.Menu();
+                    Menu();
                 }
                 else if (deleteUser == "2")
                 {
                     Console.WriteLine("This action was canceled.");
-                    Program.ShowProfile();
+                    ShowProfile();
                 }
             }
         }
@@ -282,8 +300,12 @@ namespace CasusExotischNederland
             {
                 Console.WriteLine( new List<string> { "No path found" });
             }
-        
-    }
+            Console.WriteLine("Press 'Enter' to go to the main menu.");
+            Console.ReadLine();
+            Console.Clear();
+            Menu();
+
+        }
         static void Menu()
         {
             User user = new User();
@@ -316,6 +338,9 @@ namespace CasusExotischNederland
                     break;
                 case "5":
                     CreateUser();
+                    break;
+                case "6":
+                    GenerateShortestRoute();
                     break;
                 default:
                     Console.WriteLine("Invalid choice. Please try again.");
