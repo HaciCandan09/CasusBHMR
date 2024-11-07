@@ -9,7 +9,7 @@ namespace CasusExotischNederland
 {
     internal class Program
     {
-        static async Task CreateUser()
+        static void CreateUser()
         {
             Console.WriteLine("Welkom bij het creeren van een User");
 
@@ -29,7 +29,7 @@ namespace CasusExotischNederland
 
         }
 
-        static async Task GameLogic()
+        static void GameLogic()
         {
             Area area = new Area();
             Route route = new Route();
@@ -41,7 +41,7 @@ namespace CasusExotischNederland
             User currentUser = user.GetUserbyId(1);
 
             // AREA
-            Console.WriteLine("Choose an Area: ");
+            Console.WriteLine("Select an area:");
             foreach (Area myArea in area.GetAll())
             {
                 Console.WriteLine(myArea.Id + "  " + myArea.Name);
@@ -50,7 +50,7 @@ namespace CasusExotischNederland
             int areaId = int.Parse(Console.ReadLine());
             Area selectedArea = area.Get(areaId);
             // ROUTE
-            Console.WriteLine($"The routs of {selectedArea.Name}\nChoose a route");
+            Console.WriteLine($"Available routes in {selectedArea.Name}. Please select a route:");
             foreach (Route myRoute in route.GetRoutesByArea(selectedArea.Id))
             {
                 Console.WriteLine(myRoute.Id + "  " + myRoute.Name);
@@ -59,7 +59,7 @@ namespace CasusExotischNederland
             int routeId = int.Parse(Console.ReadLine());
             Route selectedRoute = route.Get(routeId);
             // GAME
-            Console.WriteLine($"The games of {selectedRoute.Name}\nChoose a game");
+            Console.WriteLine($"Available games on {selectedRoute.Name}. Please select a game:");
             List<Game> games = game.GetGamesByRoute(selectedRoute.Id);
             foreach (Game myGame in games)
             {
@@ -77,7 +77,7 @@ namespace CasusExotischNederland
             while(questionsCounter < questions.Count)
             {
                 Question myQuestion = questions[questionsCounter];
-                Console.WriteLine("Give your answer: ");
+                Console.WriteLine("Provide your answer:");
                 Console.WriteLine($"{myQuestion.QuestionText}");
                 int answersCounter = 1;
                 foreach(Answer answer in myQuestion.Answers)
@@ -89,11 +89,11 @@ namespace CasusExotischNederland
                 Answer choosenAnswer = myQuestion.Answers[choosenAnswerId-1];
                 if (choosenAnswer.IsCorrect == true)
                 {
-                    Console.WriteLine("Correct answer.");
+                    Console.WriteLine("Correct answer!");
                 }
                 else
                 {
-                    Console.WriteLine("Wrong answer.");
+                    Console.WriteLine("Incorrect answer.");
                 }
                 questionsCounter++;
 
@@ -120,28 +120,28 @@ namespace CasusExotischNederland
 
             User user = new User(1, "user1", 44, "email1@gmail.com", 23563634);
 
-            Console.WriteLine("Enter observation name: ");
+            Console.WriteLine("Enter the observation name:");
             string observationName = Console.ReadLine();
 
-            Console.WriteLine("Observation photo: ");
+            Console.WriteLine("Enter the observation photo URL:");
             string observationPhoto = Console.ReadLine();
 
-            Console.WriteLine("Kies een Area: ");
+            Console.WriteLine("Choose an area: ");
             foreach (Area myArea in area.GetAll())
             {
                 Console.WriteLine(myArea.Id + "  " + myArea.Name);
             }
-            Console.WriteLine("Vul de area id in: ");
+            Console.WriteLine("Enter the area ID: ");
             int areaId = int.Parse(Console.ReadLine());
             Area selectedArea = area.Get(areaId);
 
 
-            Console.WriteLine("Kies een Specie: ");
+            Console.WriteLine("Choose a species: ");
             foreach (Species mySpecies in species.GetAll())
             {
                 Console.WriteLine(mySpecies.Id + "  " + mySpecies.Name);
             }
-            Console.WriteLine("Vul de specie id in: ");
+            Console.WriteLine("Enter the species ID: ");
             int speciesId = int.Parse(Console.ReadLine());
             Species selectedSpecies = species.Get(speciesId);
 
@@ -152,17 +152,19 @@ namespace CasusExotischNederland
             string location = locationInfo.Region + " " + locationInfo.City;
             float coordinateX = locationInfo.CoordinateX;
             float coordinateY = locationInfo.CoordinateY;
-            Console.WriteLine("Locatie ophalen...");
+            Console.WriteLine("Fetching location...");
             Console.WriteLine("Observation location: " + location);
-            Console.WriteLine("Druk 'Enter' om observation op te slaan.");
+            Console.WriteLine("Press 'Enter' to save the observation.");
             Console.ReadLine();
 
             Observation observation = new Observation(1, selectedArea, selectedSpecies, user, DateTime.Now.Date, observationName, coordinateX, coordinateY, observationPhoto, location);
             observation.Add();
 
+            Console.WriteLine("Observation has been successfully added.");
+
         }
 
-        static async Task ShowProfile()
+        static void ShowProfile()
         {
             User user = new User(1, "Bjarne", 18, "bjarne", 123);
             user.GetUserbyId(user.Id);
@@ -365,11 +367,11 @@ namespace CasusExotischNederland
             int value;
             if (Int32.TryParse(input.ToString(), out value))
             {
-                if (value == 1) { await ShowProfile(); }
-                else if (value == 2) { await GameLogic(); }
+                if (value == 1) {  ShowProfile(); }
+                else if (value == 2) {  GameLogic(); }
                 else if (value == 3) { }
-                else if (value == 4) { await AddObservation(); }
-                else if (value == 5) { await CreateUser(); }
+                else if (value == 4) {  await AddObservation(); }
+                else if (value == 5) {  CreateUser(); }
 
                 else { Console.WriteLine("Invalid input, please try again."); StartApp(); }
             }
@@ -377,7 +379,7 @@ namespace CasusExotischNederland
         }
         static async Task Main(string[] args)
         {
-            await StartApp();
+             await StartApp();
         }
     }
 
