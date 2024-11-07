@@ -122,7 +122,7 @@ namespace CasusExotischNederland
 
             Console.WriteLine("Enter the area ID: ");
             int areaId = int.Parse(Console.ReadLine());
-            Area selectedArea = area.Get(areaId);
+            Area selectedArea = area.GetById(areaId);
             Console.WriteLine("Choose a species: ");
           
             foreach (Species mySpecies in species.GetAll())
@@ -284,10 +284,8 @@ namespace CasusExotischNederland
             }
         
     }
-        static async Task Menu()
+        static void Menu()
         {
-            
-            
             User user = new User();
             List<int> userRols= new List<int>();
             userRols = user.GetRolesById(Convert.ToInt32(GlobalVariables.CurrentUserId));
@@ -301,26 +299,36 @@ namespace CasusExotischNederland
             }
 
             var input = Console.ReadLine();
-            int value;
-            if (Int32.TryParse(input.ToString(), out value))
+            
+            switch (input)
             {
-                if (value == 1) {  ShowProfile(); }
-                else if (value == 2) {  GameLogic(); }
-                else if (value == 3) { }
-                else if (value == 4) {  await AddObservation(); }
-                else if (value == 5) {  CreateUser(); }
-
-
-                else { Console.WriteLine("Invalid input, please try again."); await Menu(); }
+                case "1":
+                    ShowProfile();
+                    break;
+                case "2":
+                    GameLogic();
+                    break;
+                case "3":
+                    GenerateShortestRoute();
+                    break;
+                case "4":
+                    AddObservation().Wait();
+                    break;
+                case "5":
+                    CreateUser();
+                    break;
+                default:
+                    Console.WriteLine("Invalid choice. Please try again.");
+                    Menu();
+                    break;
             }
-            else { Console.WriteLine("Invalid input, please try again."); await Menu(); }
         }
         static async Task Main(string[] args)
         {
             Console.WriteLine("Welcome to the app!");
             Console.WriteLine("Please enter your user Id: ");
             GlobalVariables.CurrentUserId = Int32.Parse(Console.ReadLine());
-            await Menu();
+            Menu();
         }
     }
 }
