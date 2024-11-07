@@ -331,7 +331,7 @@ namespace CasusExotischNederland
                     GameLogic();
                     break;
                 case "3":
-                    GenerateShortestRoute();
+                    
                     break;
                 case "4":
                     AddObservation().Wait();
