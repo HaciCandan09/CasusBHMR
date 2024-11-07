@@ -25,7 +25,7 @@ namespace CasusExotischNederland.DAL
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
-                string sql = "SELECT ID,Name,Age,Email,PhoneNumber  FROM User";
+                string sql = "SELECT ID,Name,Age,Email,PhoneNumber  FROM [User]";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -46,22 +46,19 @@ namespace CasusExotischNederland.DAL
             return users;
         }
 
-        public int CreateUser(User user)
+        public void CreateUser(User user)
         {
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
-                string sql = "INSERT INTO [User] (Name,Age,Email,PhoneNumber) VALUES (@Name,@Age,@Email,@PhoneNumber)";
+                string sql = "INSERT INTO [User] (Name,Age,Email,PhoneNumber) VALUES (@Name,@Age,@Email,@PhoneNumber); SELECT SCOPE_IDENTITY();";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
                     cmd.Parameters.AddWithValue("@Name", user.Name);
                     cmd.Parameters.AddWithValue("@Age", user.Age);
                     cmd.Parameters.AddWithValue("@Email", user.Email);
                     cmd.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber);
-                    int userId = (int)cmd.ExecuteScalar();
-
-                    cmd.ExecuteNonQuery();
-                    return userId;
+                    
                 }
             }
         }

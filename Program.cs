@@ -23,7 +23,7 @@ namespace CasusExotischNederland
             Console.WriteLine("Enter User PhoneNumber: ");
             int UserPhoneNumber = Convert.ToInt32(Console.ReadLine());
             User user = new User(0, userName, UserAge, UserEmail, UserPhoneNumber);
-            GlobalVariables.CurrentUserId = user.Create();
+            GlobalVariables.CurrentUserId = user.GetAll().Last().Id;
             Console.WriteLine("User has been Added");
 
             Console.WriteLine("Press 'Enter' to go to the main menu.");
@@ -358,7 +358,6 @@ namespace CasusExotischNederland
             {
                 CreateUser();
                 Console.WriteLine($"This is your ID: {GlobalVariables.CurrentUserId}");
-                Menu();
             }
             else if (LoginAction == "2")
             {

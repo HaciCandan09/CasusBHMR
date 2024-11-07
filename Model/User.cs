@@ -40,18 +40,18 @@ namespace CasusExotischNederland.Model
         }
 
 
-        public void GetAll()
+        public List<User> GetAll()
         {
             Dal = new DataAccessLayer();
-            Dal.GetAllUser();
+            return Dal.GetAllUser();
             
         }
 
-        public int Create()
+        public void Create()
         {
             Dal = new DataAccessLayer();
             Dal.CreateUser(this);
-            return Id;
+            
         }
 
         public void Update()
