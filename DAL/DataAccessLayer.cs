@@ -178,6 +178,33 @@ namespace CasusExotischNederland.DAL
 
         // Route CRUD
 
+        public List<Route> GetAllRoutes()
+        {
+            List<Route> routes = new List<Route>();
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "SELECT * FROM Route";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            routes.Add(new Route(
+                                reader.GetInt32(0),
+                                GetAreaById(reader.GetInt32(1)),
+                                reader.GetString(2),
+                                reader.GetString(3)
+                            ));
+                        }
+                    }
+                }
+            }
+            return routes;
+
+
+        }
 
         public Route GetRouteById(int routeId)
         {
@@ -336,6 +363,45 @@ namespace CasusExotischNederland.DAL
             }
             return routePoints;
         }
+
+        public List<RoutePoint> GetRoutePoints(int routeId)
+        {
+            List<RoutePoint> routePoints = new List<RoutePoint>();
+
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                // Adjust the query to select route points where RouteID matches the given routeId
+                string sql = "SELECT ID, Name, Description, CoordinateX, CoordinateY FROM RoutePoint WHERE ID = @ID";
+
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@ID", routeId);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            RoutePoint routePoint = new RoutePoint(
+                                reader.GetInt32(0),    // ID
+                                reader.GetString(1),   // Name
+                                reader.GetString(2),   // Description
+                                reader.GetFloat(3),    // CoordinateX
+                                reader.GetFloat(4)     // CoordinateY
+                            );
+
+                            routePoints.Add(routePoint);
+                        }
+                    }
+                }
+            }
+
+            return routePoints;
+        }
+
+
+
+
 
         public void CreateRoutePoint(RoutePoint routePoint)
         {

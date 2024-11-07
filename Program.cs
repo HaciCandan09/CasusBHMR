@@ -229,6 +229,61 @@ namespace CasusExotischNederland
             }
         }
 
+        static void SelectRoute()
+        {
+            Route route = new Route();
+
+            // Get all routes for selection
+            List<Route> routes = route.GetAll();
+
+            // Display and select the starting route
+            Console.WriteLine("Select the starting route:");
+            foreach (Route r in routes)
+            {
+                Console.WriteLine($"{r.Id}: {r.Name} - {r.Description}");
+            }
+
+            Console.Write("Enter the starting route ID: ");
+            int startRouteId = int.Parse(Console.ReadLine());
+            Route startRoute = route.GetById(startRouteId);
+
+            // Display route points for the selected starting route
+            Console.WriteLine("Route points for the starting route:");
+            List<RoutePoint> startRoutePoints = route.GetRoutePoints(startRouteId);
+            foreach (RoutePoint point in startRoutePoints)
+            {
+                Console.WriteLine($"{point.Id}: {point.Name} - {point.Description}");
+            }
+
+            // Display and select the ending route
+            Console.WriteLine("Select the destination route:");
+            foreach (Route r in routes)
+            {
+                Console.WriteLine($"{r.Id}: {r.Name} - {r.Description}");
+            }
+
+            Console.Write("Enter the destination route ID: ");
+            int endRouteId = int.Parse(Console.ReadLine());
+            Route endRoute = route.GetById(endRouteId);
+
+            // Display route points for the selected ending route
+            Console.WriteLine("Route points for the destination route:");
+            List<RoutePoint> endRoutePoints = route.GetRoutePoints(endRouteId);
+            foreach (RoutePoint point in endRoutePoints)
+            {
+                Console.WriteLine($"{point.Id}: {point.Name} - {point.Description}");
+            }
+
+            // Display selected route summary
+            Console.WriteLine($"You selected a walk from {startRoute.Name} to {endRoute.Name}.");
+
+            Console.WriteLine("Press 'Enter' to go to the main menu.");
+            Console.ReadLine();
+            Console.Clear();
+            Menu();
+        }
+
+
         static void GenerateShortestRoute()
         {
             Console.WriteLine("Enter the start point(a,b,c,d,e,f): ");
@@ -331,7 +386,7 @@ namespace CasusExotischNederland
                     GameLogic();
                     break;
                 case "3":
-                    
+                    SelectRoute();
                     break;
                 case "4":
                     AddObservation().Wait();

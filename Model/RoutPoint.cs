@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CasusExotischNederland.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace CasusExotischNederland.Model
         public string Description { get; set; }
         public float CoordinateX { get; set; }
         public float CoordinateY { get; set; }
+        public DataAccessLayer Dal { get; set; }
 
         public RoutePoint(int id, string name, string description, float coordinateX, float coordinateY)
         {
@@ -26,7 +28,18 @@ namespace CasusExotischNederland.Model
             Routes = new List<Route>();
         }
 
-        public void GetAll() { }
+        public void GetAll()
+        {
+            Dal = new DataAccessLayer();
+            Dal.GetRoutePoints();
+        }
+
+        public Route GetById(int routeId)
+        {
+            Dal = new DataAccessLayer();
+            return Dal.GetRouteById(routeId);
+        }
+
         public void Create() { }
         public void Update() { }
         public void Delete() { }
