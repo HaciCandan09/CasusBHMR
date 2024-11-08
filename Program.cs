@@ -23,6 +23,7 @@ namespace CasusExotischNederland
             Console.WriteLine("Enter User PhoneNumber: ");
             int UserPhoneNumber = Convert.ToInt32(Console.ReadLine());
             User user = new User(0, userName, UserAge, UserEmail, UserPhoneNumber);
+            user.Create();
             GlobalVariables.CurrentUserId = user.GetAll().Last().Id;
             Console.WriteLine("User has been Added");
 

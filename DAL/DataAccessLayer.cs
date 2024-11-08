@@ -11,7 +11,7 @@ namespace CasusExotischNederland.DAL
     public class DataAccessLayer
     {
 
-        private string connectionString = "Data Source=.; Initial Catalog=ExotischNederland; Integrated Security=True;";
+        private string connectionString = "Data Source=MSI; Initial Catalog=ExotischNederland; Integrated Security=True;";
 
         public DataAccessLayer()
         {
