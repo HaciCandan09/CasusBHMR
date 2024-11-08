@@ -11,7 +11,7 @@ namespace CasusExotischNederland.DAL
     public class DataAccessLayer
     {
 
-        private string connectionString = "Data Source=MSI; Initial Catalog=ExotischNederland; Integrated Security=True;";
+        private string connectionString = "Data Source=.; Initial Catalog=ExotischNederland; Integrated Security=True;";
 
         public DataAccessLayer()
         {
@@ -46,7 +46,7 @@ namespace CasusExotischNederland.DAL
             return users;
         }
 
-        public void CreateUser(User user)
+        public int CreateUser(User user)
         {
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
@@ -58,8 +58,12 @@ namespace CasusExotischNederland.DAL
                     cmd.Parameters.AddWithValue("@Age", user.Age);
                     cmd.Parameters.AddWithValue("@Email", user.Email);
                     cmd.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber);
-                    
+                    int userId = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    connect.Close();
+                    return userId;
                 }
+
             }
         }
 
