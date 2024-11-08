@@ -11,7 +11,7 @@ namespace CasusExotischNederland.DAL
     public class DataAccessLayer
     {
 
-        private string connectionString = "Data Source=.; Initial Catalog=ExotischNederland; Integrated Security=True;";
+        private string connectionString = "Data Source=RENAD; Initial Catalog=ExotischNederland; Integrated Security=True;";
 
         public DataAccessLayer()
         {
@@ -609,8 +609,8 @@ namespace CasusExotischNederland.DAL
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
-                string sql = "INSERT INTO Observation (AreaID,SpeciesID,UserID,Name,Date,Location,CoordinateX,CoordinateY) VALUES " +
-                    "(@AreaID, @SpeciesID, @UserID,@Name,@Date,@Location,@CoordinateX,@CoordinateY)";
+                string sql = "INSERT INTO Observation (AreaID,SpeciesID,UserID,Name,Date,Location,CoordinateX,CoordinateY, FotoUrl) VALUES " +
+                    "(@AreaID, @SpeciesID, @UserID,@Name,@Date,@Location,@CoordinateX,@CoordinateY,@FotoUrl)";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
                     cmd.Parameters.AddWithValue("@AreaId", observation.Area.Id);
@@ -621,6 +621,7 @@ namespace CasusExotischNederland.DAL
                     cmd.Parameters.AddWithValue("@Location", observation.Location);
                     cmd.Parameters.AddWithValue("@CoordinateX", observation.CoordinateX);
                     cmd.Parameters.AddWithValue("@CoordinateY", observation.CoordinateY);
+                    cmd.Parameters.AddWithValue("@FotoUrl", observation.FotoUrl);
 
                     cmd.ExecuteNonQuery();
                 }
