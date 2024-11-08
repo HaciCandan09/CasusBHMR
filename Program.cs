@@ -181,8 +181,6 @@ namespace CasusExotischNederland
 
             if (ProfileAction == "1")
             {
-                Console.WriteLine("Press 1 to go to Profile.\nPress 2 to go to Games. \nPress 3 to go to Routes. \nPress 4 to Add a observation. \nPress 5 to create user.");
-                Console.ReadLine();
                 Program.Menu();
             }
             else if (ProfileAction == "2")
@@ -314,7 +312,7 @@ namespace CasusExotischNederland
 
             if (userRols.Contains(1))
             {
-                Console.WriteLine("Press 1 to go to Profile.\nPress 2 to go to Games. \nPress 3 to go to Routes. \nPress 4 to Add a observation. \nPress 5 to create Route. \nPress 5 to create Area.\nPress 5 to create Game. \nPress 5 to create POI. \nPress 5 to create RoutePoint.");
+                Console.WriteLine("Press 1 to go to Profile.\nPress 2 to go to Games. \nPress 3 to go to Routes. \nPress 4 to Add a observation. \nPress 5 to create Route. \nPress 6 to create Area.\nPress 7 to create Game. \nPress 8 to create POI. \nPress 9 to create RoutePoint.");
             } else 
             {
                 Console.WriteLine("Press 1 to go to Profile.\nPress 2 to go to Games. \nPress 3 to go to Routes. \nPress 4 to Add a observation. \nPress 5 to create user. \nPress 6 to to see the map.");
