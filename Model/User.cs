@@ -64,7 +64,7 @@ namespace CasusExotischNederland.Model
             Dal.DeleteUser(userId);
         }
 
-        public User GetUserbyId(int userId)
+        public User GetbyId(int userId)
         {
             Dal = new DataAccessLayer();
             return Dal.GetUserById(userId);
