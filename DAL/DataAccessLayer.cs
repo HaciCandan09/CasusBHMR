@@ -10,14 +10,13 @@ namespace CasusExotischNederland.DAL
 {
     public class DataAccessLayer
     {
-
-        private string connectionString = "Data Source=RENAD; Initial Catalog=ExotischNederland; Integrated Security=True;";
+        private string connectionString = "Data Source=.; Initial Catalog=ExotischNederland; Integrated Security=True;";
 
         public DataAccessLayer()
         {
 
         }
-
+        
         // User CRUD
         public List<User> GetAllUser()
         {
@@ -128,6 +127,7 @@ namespace CasusExotischNederland.DAL
             return user;
         }
 
+        //crud Role
         public Rol GetRoleById(int id)
         {
             Rol role = null;
@@ -177,9 +177,7 @@ namespace CasusExotischNederland.DAL
             return roles;
         }
 
-
         // Route CRUD
-
         public List<Route> GetAllRoutes()
         {
             List<Route> routes = new List<Route>();
@@ -204,8 +202,6 @@ namespace CasusExotischNederland.DAL
                 }
             }
             return routes;
-
-
         }
 
         public Route GetRouteById(int routeId)
@@ -308,77 +304,38 @@ namespace CasusExotischNederland.DAL
             }
         }
 
-
-
-        /*
-        public Route GetRouteById(int routeId)
-        {
-            Route route = null;
-            using (SqlConnection connect = new SqlConnection(connectionString))
-            {
-                connect.Open();
-                string sql = "SELECT ID, areaid, name, description FROM Route";
-                using (SqlCommand cmd = new SqlCommand(sql, connect))
-                {
-                    cmd.Parameters.AddWithValue("@ID", routeId);
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            route = new Route(
-                                reader.GetInt32(0),
-                                reader.GetInt32(1),
-                                reader.GetString(2),
-                                reader.GetString(3)
-                            );
-                        }
-                    }
-                }                    
-            }
-            return route;
-        }
-        */
-
         // RoutePoint CRUD
         public List<RoutePoint> GetRoutePointsByRouteId(int routeId)
         {
             List<RoutePoint> routePoints = new List<RoutePoint>();
-
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
-
-                // SQL Query to fetch all route points associated with the given RouteId
                 string sql = @"
             SELECT rp.ID, rp.Name, rp.Description, rp.CoordinateX, rp.CoordinateY
             FROM RoutePointRoute rpr
             JOIN RoutePoint rp ON rpr.RoutePointID = rp.ID
-            WHERE rpr.RouteID = @RouteID";  // Using RouteID to filter
-
+            WHERE rpr.RouteID = @RouteID";  
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
-                    cmd.Parameters.AddWithValue("@RouteID", routeId);  // Pass the RouteID as a parameter
-
+                    cmd.Parameters.AddWithValue("@RouteID", routeId);  
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        // Iterate through the results and map them to RoutePoint objects
                         while (reader.Read())
                         {
-                            int pointId = reader.GetInt32(0);  // RoutePoint ID
-                            string pointName = reader.GetString(1);  // RoutePoint Name
-                            string pointDescription = reader.GetString(2);  // RoutePoint Description
-                            float coordinateX = (float)reader.GetDouble(3);  // CoordinateX
-                            float coordinateY = (float)reader.GetDouble(4);  // CoordinateY
-
-                            // Add the RoutePoint to the list
+                            int pointId = reader.GetInt32(0); 
+                            string pointName = reader.GetString(1);  
+                            string pointDescription = reader.GetString(2);  
+                            float coordinateX = (float)reader.GetDouble(3);  
+                            float coordinateY = (float)reader.GetDouble(4);  
                             routePoints.Add(new RoutePoint(pointId, pointName, pointDescription, coordinateX, coordinateY));
                         }
                     }
                 }
             }
-
             return routePoints;
         }
+
         public List<RoutePoint> GetRoutePoints()
         {
             List<RoutePoint> routePoints = new List<RoutePoint>();
@@ -405,57 +362,45 @@ namespace CasusExotischNederland.DAL
             return routePoints;
         }
 
-        //public List<RoutePoint> GetRoutePoints(int routeId)
-        //{
-        //    List<RoutePoint> routePoints = new List<RoutePoint>();
-
-        //    using (SqlConnection connect = new SqlConnection(connectionString))
-        //    {
-        //        connect.Open();
-        //        // Adjust the query to select route points where RouteID matches the given routeId
-        //        string sql = "SELECT ID, Name, Description, CoordinateX, CoordinateY FROM RoutePoint WHERE ID = @ID";
-
-        //        using (SqlCommand cmd = new SqlCommand(sql, connect))
-        //        {
-        //            cmd.Parameters.AddWithValue("@ID", routeId);
-
-        //            using (SqlDataReader reader = cmd.ExecuteReader())
-        //            {
-        //                while (reader.Read())
-        //                {
-        //                    RoutePoint routePoint = new RoutePoint(
-        //                        reader.GetInt32(0),    // ID
-        //                        reader.GetString(1),   // Name
-        //                        reader.GetString(2),   // Description
-        //                        reader.GetFloat(3),    // CoordinateX
-        //                        reader.GetFloat(4)     // CoordinateY
-        //                    );
-
-        //                    routePoints.Add(routePoint);
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return routePoints;
-        //}
-
-        public List<RoutePoint> GetRoutePoints(int routeId)
+        public List<RoutePoint> GetAllRoutePoints()
         {
-            List<RoutePoint> routePoints = new List<RoutePoint>();
-
+            List<RoutePoint> routepoints = new List<RoutePoint>();
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
+                string sql = "SELECT *  FROM [RoutePoint]";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+                            string name = reader.GetString(1);
+                            string description = reader.GetString(2);
+                            float x = reader.GetFloat(3);
+                            float y = reader.GetFloat(4);
+                            routepoints.Add(new RoutePoint(id, name,description, x, y));
+                        }
+                    }
+                }
+            }
+            return routepoints;
+        }
 
+      /*  public List<RoutePoint> GetRoutePoints(int routeId)
+        {
+            List<RoutePoint> routePoints = new List<RoutePoint>();
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
                 string sql = @"
-            SELECT RP.Id, RP.Name, RP.Description, RP.CoordinateX, RP.CoordinateY, 
+                   SELECT RP.Id, RP.Name, RP.Description, RP.CoordinateX, RP.CoordinateY, 
                    POI.Id AS PoiId, POI.Name AS PoiName, POI.Description AS PoiDescription, 
                    POI.CoordinateX AS PoiCoordinateX, POI.CoordinateY AS PoiCoordinateY, POI.Type AS PoiType
-            FROM RoutePoint RP
-            LEFT JOIN POI POI ON RP.Id = POI.RoutePointID
-            WHERE RP.RouteId = @RouteId";
-
+                   FROM RoutePoint RP
+                   LEFT JOIN POI POI ON RP.Id = POI.RoutePointID
+                   WHERE RP.RouteId = @RouteId";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
                     cmd.Parameters.AddWithValue("@RouteId", routeId);
@@ -486,19 +431,13 @@ namespace CasusExotischNederland.DAL
                                     Type = reader.IsDBNull(10) ? null : reader.GetString(10)
                                 };
                             }
-
                             routePoints.Add(routePoint);
                         }
                     }
                 }
             }
-
             return routePoints;
-        }
-
-
-
-
+        }*/
 
         public void CreateRoutePoint(RoutePoint routePoint)
         {
@@ -549,7 +488,6 @@ namespace CasusExotischNederland.DAL
             }
         }
 
-
         public RoutePoint GetRoutePointById(int routePointId)
         {
             RoutePoint routePoint = null;
@@ -569,7 +507,7 @@ namespace CasusExotischNederland.DAL
                                 reader.GetString(1),
                                 reader.GetString(2),
                                 reader.GetFloat(3),
-                                 reader.GetFloat(4)
+                                reader.GetFloat(4)
                             );
                         }
                     }
@@ -578,7 +516,7 @@ namespace CasusExotischNederland.DAL
             return routePoint;
         }
 
-        public List<Poi> GetPointsOfInterest()
+        public List<Poi> GetAllPoi()
         {
             List<Poi> pois = new List<Poi>();
             using (SqlConnection connect = new SqlConnection(connectionString))
@@ -606,6 +544,35 @@ namespace CasusExotischNederland.DAL
             return pois;
         }
 
+        public Poi GetPoiByRoutePointId(int RoutePointID,RoutePoint rp)
+        {
+            Poi poi = null;
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                string sql = "SELECT * FROM [POI] WHERE RoutePointID = @RoutePointID ";
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@ID", RoutePointID);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            poi = new Poi(
+                                reader.GetInt32(0),
+                                rp,
+                                reader.GetString(2),
+                                reader.GetString(3),
+                                reader.GetFloat(4),
+                                reader.GetFloat(5),
+                                reader.GetString(6)
+                            );
+                        }
+                    }
+                }
+            }
+            return poi;
+        }
 
         public List<Poi> GetPOIsByRoutePointId(int routePointId)
         {
@@ -616,9 +583,9 @@ namespace CasusExotischNederland.DAL
                 connect.Open();
 
                 string sql = @"
-            SELECT ID, Name, Description, CoordinateX, CoordinateY, Type
-            FROM POI
-            WHERE RoutePointID = @RoutePointID";
+                             SELECT ID, Name, Description, CoordinateX, CoordinateY, Type
+                             FROM POI
+                             WHERE RoutePointID = @RoutePointID";
 
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
@@ -632,10 +599,10 @@ namespace CasusExotischNederland.DAL
                             {
                                 Id = reader.GetInt32(0),
                                 Name = reader.GetString(1),
-                                Description = reader.IsDBNull(2) ? null : reader.GetString(2), // Handle possible NULL values for Description
-                                CoordinateX = (float)reader.GetDouble(3), // You can also use GetFloat() if it's a float in DB
-                                CoordinateY = (float)reader.GetDouble(4), // You can also use GetFloat() if it's a float in DB
-                                Type = reader.IsDBNull(5) ? null : reader.GetString(5) // Handle possible NULL values for Type
+                                Description = reader.IsDBNull(2) ? null : reader.GetString(2), 
+                                CoordinateX = (float)reader.GetDouble(3),
+                                CoordinateY = (float)reader.GetDouble(4),
+                                Type = reader.IsDBNull(5) ? null : reader.GetString(5) 
                             };
 
                             pois.Add(poi);
@@ -647,6 +614,7 @@ namespace CasusExotischNederland.DAL
             return pois;
         }
 
+        //Poi CRUD
         public void CreatePointOfInterest(Poi poi)
         {
             using (SqlConnection connect = new SqlConnection(connectionString))
@@ -701,7 +669,6 @@ namespace CasusExotischNederland.DAL
         }
 
         // Area CRUD
-
         public Area GetAreaById(int areaId)
         {
             Area area = null;
@@ -729,6 +696,7 @@ namespace CasusExotischNederland.DAL
             }
             return area;
         }
+
         public List<Area> GetAreas()
         {
             List<Area> areas = new List<Area>();
@@ -766,8 +734,6 @@ namespace CasusExotischNederland.DAL
                     cmd.Parameters.AddWithValue("@Name", area.Name);
                     cmd.Parameters.AddWithValue("@Description", area.Description);
                     cmd.Parameters.AddWithValue("@Location", area.Location);
-                    
-                    
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -824,12 +790,10 @@ namespace CasusExotischNederland.DAL
                     cmd.Parameters.AddWithValue("@CoordinateX", observation.CoordinateX);
                     cmd.Parameters.AddWithValue("@CoordinateY", observation.CoordinateY);
                     cmd.Parameters.AddWithValue("@FotoUrl", observation.FotoUrl);
-
                     cmd.ExecuteNonQuery();
                 }
             }
         }
-
 
         //Species CRUD
         public int CreateSpecies(Species species)
@@ -844,10 +808,7 @@ namespace CasusExotischNederland.DAL
                     cmd.Parameters.AddWithValue("@Name", species.Name);
                     cmd.Parameters.AddWithValue("@Category", species.Category);
                     cmd.Parameters.AddWithValue("@FotoURL", species.FotoUrl);
-
-
                     int speciesId = Convert.ToInt32(cmd.ExecuteScalar());
-
                     connect.Close();
                     return speciesId;
                 }
@@ -871,7 +832,6 @@ namespace CasusExotischNederland.DAL
                             string name = reader.GetString(1);
                             string category = reader.GetString(2);
                             string location = reader.GetString(3);
-
                             species.Add(new Species(id, name, category, location));
                         }
                     }
@@ -899,7 +859,6 @@ namespace CasusExotischNederland.DAL
                                 reader.GetString(1),
                                 reader.GetString(2),
                                 reader.GetString(3)
-
                             );
                         }
                     }
@@ -909,7 +868,6 @@ namespace CasusExotischNederland.DAL
         }
 
         // Game crud
-
         public List<Game> GetGamesByRouteId(int routeId)
         {
             List<Game> games = new List<Game>();
@@ -925,11 +883,9 @@ namespace CasusExotischNederland.DAL
                         while (reader.Read())
                         {
                             int id = reader.GetInt32(0);
-
                             string name = reader.GetString(2);
                             string description = reader.GetString(3);
                             List<Question> questions = GetQuestionsByGameId(id);
-
                             Game game = new Game(id, name, description);
                             game.Questions = questions;
                             games.Add(game);
@@ -941,7 +897,6 @@ namespace CasusExotischNederland.DAL
         }
 
         // Question CRUD
-
         public Question GetQuestionById(int questionId)
         {
             Question question = null;
@@ -969,7 +924,6 @@ namespace CasusExotischNederland.DAL
             }
             return question;
         }
-
 
         public List<Question> GetQuestionsByGameId(int gameId)
         {
@@ -1002,7 +956,6 @@ namespace CasusExotischNederland.DAL
         }
 
         // Answer CRUD
-
         public List<Answer> GetAnswersByQuestionId(int questionId)
         {
             List<Answer> answers = new List<Answer>();
@@ -1031,7 +984,6 @@ namespace CasusExotischNederland.DAL
         }
 
         // UserQuestion 
-
         public void CreateUserQuestion(User user , Question question, Answer answer)
         {
             using (SqlConnection connect = new SqlConnection(connectionString))
@@ -1043,12 +995,9 @@ namespace CasusExotischNederland.DAL
                     cmd.Parameters.AddWithValue("@UserID", user.Id);
                     cmd.Parameters.AddWithValue("@QuestionID", question.Id);
                     cmd.Parameters.AddWithValue("@GivenAnswer", answer.AnswerText);
-
                     cmd.ExecuteNonQuery();
                 }
             }
         }
-
     }
 }
-

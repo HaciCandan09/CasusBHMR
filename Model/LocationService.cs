@@ -24,10 +24,8 @@ namespace CasusExotischNederland.Model
                 string responseBody = await response.Content.ReadAsStringAsync();
                 JObject json = JObject.Parse(responseBody);
 
-
                 return new LocationInfo
                 {
-
                     City = json["city"].ToString(),
                     Region = json["region"].ToString(),
                     Country = json["country"].ToString(),

@@ -27,7 +27,6 @@ namespace CasusExotischNederland.Model
             CoordinateY = coordinateY;
             Routes = new List<Route>();
         }
-
         public RoutePoint()
         {
                 
@@ -36,7 +35,7 @@ namespace CasusExotischNederland.Model
         public void GetAll()
         {
             Dal = new DataAccessLayer();
-            Dal.GetRoutePoints();
+            Dal.GetAllRoutePoints();
         }
 
         public Route GetById(int routeId)
@@ -48,26 +47,8 @@ namespace CasusExotischNederland.Model
         public Poi GetPoiByRoutePointId(int routePointId)
         {
             Dal = new DataAccessLayer();
-            List<Poi> pois = Dal.GetPOIsByRoutePointId(routePointId);
-
-            // Return the first Poi (assuming one Poi per RoutePointId)
-            return pois.FirstOrDefault(); // If there's no Poi, this will return null
-        }
-
-        public void LoadPoi()
-        {
-            Dal = new DataAccessLayer();
-            this.poi = Dal.GetPOIsByRoutePointId(this.Id).FirstOrDefault();  // Fetch POI for the current RoutePoint
-
-            // Log POI data to confirm it’s being retrieved
-            if (this.poi != null)
-            {
-                Console.WriteLine($"POI Loaded: {this.poi.Name}, {this.poi.Description}, {this.poi.Type}");
-            }
-            else
-            {
-                Console.WriteLine($"No POI found for RoutePoint ID: {this.Id}");
-            }
+            poi = Dal.GetPoiByRoutePointId(routePointId, this);
+            return Dal.GetPoiByRoutePointId(routePointId, this);
         }
 
         public void Create() { }

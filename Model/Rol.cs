@@ -14,7 +14,6 @@ namespace CasusExotischNederland.Model
         public string Name { get; set; }
         public DataAccessLayer Dal { get; set; }
 
-
         public Rol(int id, string name)
         {
             Id = id;

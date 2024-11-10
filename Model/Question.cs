@@ -19,7 +19,6 @@ namespace CasusExotischNederland.Model
         {
             
         }
-
         public Question(int id, string questionText, string type, int amountOfPoints)
         {
             Id = id;
@@ -29,7 +28,7 @@ namespace CasusExotischNederland.Model
             Answers = new List<Answer>();
             Users = new List<User>();
         }
-
+        
         public void GetAll() { }
         public void Create() { }
         public void Update() { }

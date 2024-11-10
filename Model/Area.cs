@@ -22,6 +22,7 @@ namespace CasusExotischNederland.Model
         {
             
         }
+
         public Area(int id, string name, string description, string location)
         {
             Id = id;

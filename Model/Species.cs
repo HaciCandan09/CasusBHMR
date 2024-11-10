@@ -24,6 +24,7 @@ namespace CasusExotischNederland.Model
             Observations = new List<Observation>();
             Category = category;
         }
+
         public Species()
         {
             

@@ -1,16 +1,27 @@
-﻿using CasusExotischNederland.DAL;
-using CasusExotischNederland.Model;
-using System.Buffers;
-using System.Diagnostics.Metrics;
-using System.Numerics;
-using System.Runtime.InteropServices;
-
+﻿using CasusExotischNederland.Model;
 namespace CasusExotischNederland
 {
-    
-
     internal class Program
     {
+        static async Task Main(string[] args)
+        {
+            Console.WriteLine("Welcome to the app!");
+            Console.WriteLine("Press 1 if you want to create a user. \nPress 2 if you want to login.");
+            var LoginAction = Console.ReadLine();
+
+            if (LoginAction == "1")
+            {
+                CreateUser();
+                Console.WriteLine($"This is your ID: {GlobalVariables.CurrentUserId}");
+            }
+            else if (LoginAction == "2")
+            {
+                Console.WriteLine("Please enter your user Id: ");
+                GlobalVariables.CurrentUserId = Int32.Parse(Console.ReadLine());
+                Menu();
+            }
+        }
+
         static void CreateUser()
         {
             Console.WriteLine("Welcome to creating a user.");
@@ -22,15 +33,22 @@ namespace CasusExotischNederland
             string UserEmail = Console.ReadLine();
             Console.WriteLine("Enter User PhoneNumber: ");
             int UserPhoneNumber = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Press y if u agree to the saving of your personal information.");
+            var agree = Console.ReadLine();
+
+            if (agree != "y")
+            {
+                Console.WriteLine("You have to agree to the saving of your personal information.");
+                CreateUser();
+            }
+            else { }
             User user = new User(0, userName, UserAge, UserEmail, UserPhoneNumber);
             GlobalVariables.CurrentUserId = user.Create();
             Console.WriteLine("User has been Added");
-
             Console.WriteLine("Press 'Enter' to go to the main menu.");
             Console.ReadLine();
             Console.Clear();
             Menu();
-
         }
 
         static void GameLogic()
@@ -40,44 +58,44 @@ namespace CasusExotischNederland
             Game game = new Game();
             Question question = new Question();
             User user = new User();
-
-            // Current User  DEZE MOET NOG GEIIMPLEMENTEERD WORDEN
+            
             User currentUser = user.GetUserbyId(GlobalVariables.CurrentUserId);
 
-            // AREA
             Console.WriteLine("Select an area:");
             foreach (Area myArea in area.GetAll())
             {
                 Console.WriteLine(myArea.Id + "  " + myArea.Name);
             }
+
             Console.WriteLine("Enter the area ID:");
             int areaId = int.Parse(Console.ReadLine());
-            Area selectedArea = area.GetById(areaId);
-            // ROUTE
-            Console.WriteLine($"Available routes in {selectedArea.Name}. Please select a route:");
-            foreach (Route myRoute in route.GetRoutesByArea(selectedArea.Id))
+            area = area.GetById(areaId);
+            Console.WriteLine($"Available routes in {area.Name}. Please select a route:");
+            
+            foreach (Route myRoute in route.GetRoutesByArea(area.Id))
             {
                 Console.WriteLine(myRoute.Id + "  " + myRoute.Name);
             }
+
             Console.WriteLine("Enter the route ID:");
             int routeId = int.Parse(Console.ReadLine());
-            Route selectedRoute = route.GetById(routeId);
-            // GAME
-            Console.WriteLine($"Available games on {selectedRoute.Name}. Please select a game:");
-            List<Game> games = game.GetGamesByRoute(selectedRoute.Id);
+            route = route.GetById(routeId);
+            Console.WriteLine($"Available games on {route.Name}. Please select a game:");
+            List<Game> games = game.GetGamesByRoute(route.Id);
+            
             foreach (Game myGame in games)
             {
                 Console.WriteLine(myGame.Id + "  " + myGame.Name);
             }
+
             Console.WriteLine("Enter the game ID:");
             int gameId = int.Parse(Console.ReadLine());
-            Game selectedGame = games.FirstOrDefault(g => g.Id == gameId);
-
-            // Questions
+            game= games.FirstOrDefault(g => g.Id == gameId);
             Console.WriteLine("Game questions");
             int questionsCounter = 0;
-            List<Question> questions = selectedGame.Questions;
+            List<Question> questions = game.Questions;
             int points = 0;
+            
             while (questionsCounter < questions.Count)
             {
                 Question myQuestion = questions[questionsCounter];
@@ -91,7 +109,6 @@ namespace CasusExotischNederland
                 }
                 int choosenAnswerId = Int32.Parse(Console.ReadLine());
                 Answer choosenAnswer = myQuestion.Answers[choosenAnswerId-1];
-                
                 if (choosenAnswer.IsCorrect == true)
                 {
                     Console.WriteLine("Correct answer!");
@@ -101,18 +118,15 @@ namespace CasusExotischNederland
                 {
                     Answer answer = myQuestion.Answers.FirstOrDefault(a => a.IsCorrect);
                     Console.WriteLine($"Incorrect answer.\nThe correct answer is {answer.AnswerText}");
-
                 }
                 questionsCounter++;
-
-                // gegeven antwoord opslaan
                 game.SaveGivenAnswer(currentUser, myQuestion, choosenAnswer);
             }
+
             Console.WriteLine($"Game completed!\nYour score is: {points}");
             Console.WriteLine("Press 'Enter' to go to the main menu.");
             Console.ReadLine();
             Console.Clear();
-
             Menu();
         }
 
@@ -167,7 +181,6 @@ namespace CasusExotischNederland
             Console.ReadLine();
             Console.Clear();
             Menu();
-
         }
 
         static void ShowProfile()
@@ -181,7 +194,7 @@ namespace CasusExotischNederland
 
             if (ProfileAction == "1")
             {
-                Program.Menu();
+                Menu();
             }
             else if (ProfileAction == "2")
             {
@@ -229,7 +242,6 @@ namespace CasusExotischNederland
 
         static void SelectRoute()
         {
-            
             Area area = new Area();
             List<Area> areas = area.GetAll();
 
@@ -241,7 +253,6 @@ namespace CasusExotischNederland
 
             Console.Write("Enter the Area ID: ");
             int selectedAreaId = int.Parse(Console.ReadLine());
-
             
             Area selectedArea = area.GetById(selectedAreaId);
             if (selectedArea == null)
@@ -249,7 +260,6 @@ namespace CasusExotischNederland
                 Console.WriteLine("Invalid Area selected.");
                 return;
             }
-
             
             Console.WriteLine($"\nRoutes available in Area: {selectedArea.Name}");
             Route route = new Route();
@@ -265,11 +275,9 @@ namespace CasusExotischNederland
             {
                 Console.WriteLine($"{r.Id}: {r.Name} - {r.Description}");
             }
-
             
             Console.Write("Enter the Route ID: ");
             int selectedRouteId = int.Parse(Console.ReadLine());
-
             
             Route selectedRoute = routes.Find(r => r.Id == selectedRouteId);
             if (selectedRoute == null)
@@ -277,7 +285,6 @@ namespace CasusExotischNederland
                 Console.WriteLine("Invalid Route selected.");
                 return;
             }
-
              
             Console.WriteLine($"\nRoute points for Route: {selectedRoute.Name}");
             List<RoutePoint> routePoints = route.GetRoutePoints(selectedRouteId);  
@@ -286,17 +293,13 @@ namespace CasusExotischNederland
             {
                 foreach (var point in routePoints)
                 {
-                    
                     Console.WriteLine($"{point.Id}: {point.Name} - {point.Description}");
                     Console.WriteLine($"Coordinates: ({point.CoordinateX}, {point.CoordinateY})");
-
                     
-                    point.LoadPoi();  
-
+                    point.GetPoiByRoutePointId(point.Id);  
                     
                     if (point.poi != null)
                     {
-                        
                         Console.WriteLine($"POI: {point.poi.Name} - {point.poi.Description}");
                         Console.WriteLine($"POI Type: {point.poi.Type}");
                     }
@@ -304,7 +307,6 @@ namespace CasusExotischNederland
                     {
                         Console.WriteLine("No POI associated with this route point.");
                     }
-
                     Console.WriteLine();  
                 }
             }
@@ -312,15 +314,12 @@ namespace CasusExotischNederland
             {
                 Console.WriteLine("No route points found for this route.");
             }
-
            
             Console.WriteLine("\nPress 'Enter' to return to the main menu.");
             Console.ReadLine();
             Console.Clear();
             Menu();
-
         }
-
 
         static void GenerateShortestRoute()
         {
@@ -338,11 +337,9 @@ namespace CasusExotischNederland
                 { "e", new Dictionary<string, int> { { "a", 2 }, { "b", 6 }, { "d", 6 } } },
                 { "f", new Dictionary<string, int> { { "a", 12 }, { "c", 8 }, { "d", 6 } } }
             };
-
             Dictionary<string, int> distances = new Dictionary<string, int>();
             Dictionary<string, string> previousNodes = new Dictionary<string, string>();
             List<string> unvisitedNodes = graph.Keys.ToList();
-
 
             foreach (var node in graph.Keys)
             {
@@ -367,7 +364,6 @@ namespace CasusExotischNederland
                     {
                         continue;
                     }
-
                     int newDist = distances[currentNode] + neighbor.Value;
                     if (newDist < distances[neighbor.Key])
                     {
@@ -397,8 +393,8 @@ namespace CasusExotischNederland
             Console.ReadLine();
             Console.Clear();
             Menu();
-
         }
+
         static void Menu()
         {
             User user = new User();
@@ -412,7 +408,6 @@ namespace CasusExotischNederland
             {
                 Console.WriteLine("Press 1 to go to Profile.\nPress 2 to go to Games. \nPress 3 to go to Routes. \nPress 4 to Add a observation. \nPress 5 to create user. \nPress 6 to to see the map.");
             }
-
             var input = Console.ReadLine();
             
             switch (input)
@@ -440,24 +435,6 @@ namespace CasusExotischNederland
                     Menu();
                     break;
             }
-        }
-        static async Task Main(string[] args)
-        {
-            Console.WriteLine("Welcome to the app!");
-            Console.WriteLine("Press 1 if you want to create a user. \nPress 2 if you want to login.");
-            var LoginAction = Console.ReadLine();
-
-            if (LoginAction == "1")
-            {
-                CreateUser();
-                Console.WriteLine($"This is your ID: {GlobalVariables.CurrentUserId}");
-            }
-            else if (LoginAction == "2")
-            {
-                Console.WriteLine("Please enter your user Id: ");
-                GlobalVariables.CurrentUserId = Int32.Parse(Console.ReadLine());
-                Menu();
-            }            
         }
     }
 }

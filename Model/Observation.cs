@@ -34,7 +34,6 @@ namespace CasusExotischNederland.Model
             FotoUrl = fotoUrl;
             Location = location;
         }
-
         public void Create()
         {
             Dal = new DataAccessLayer();

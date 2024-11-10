@@ -20,6 +20,7 @@ namespace CasusExotischNederland.Model
             AnswerText = answerText;
             IsCorrect = isCorrect;
         }
+
         public void GetAll() { }
         public void Create() { }
         public void Update() { }

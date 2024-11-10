@@ -34,15 +34,6 @@ namespace CasusExotischNederland.Model
             
         }
 
-        public Poi GetPoiByRoutePointId(int routePointId)
-        {
-            Dal = new DataAccessLayer();
-            List<Poi> pois = Dal.GetPOIsByRoutePointId(routePointId);
-
-            // Return the first Poi (assuming one Poi per RoutePointId)
-            return pois.FirstOrDefault(); // If there's no Poi, this will return null
-        }
-
         public void GetAll() { }
         public void Create() { }
         public void Update() { }

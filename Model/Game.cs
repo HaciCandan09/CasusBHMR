@@ -19,6 +19,7 @@ namespace CasusExotischNederland.Model
         {
             
         }
+
         public Game(int id, string name, string description)
         {
             Id = id;

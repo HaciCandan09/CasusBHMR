@@ -44,14 +44,12 @@ namespace CasusExotischNederland.Model
         {
             Dal = new DataAccessLayer();
             return Dal.GetAllUser();
-            
         }
 
         public int Create()
         {
             Dal = new DataAccessLayer();
             return Dal.CreateUser(this);
-            
         }
 
         public void Update()

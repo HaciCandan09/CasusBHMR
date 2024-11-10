@@ -33,7 +33,6 @@ namespace CasusExotischNederland.Model
             Users = new List<User>();
         }
 
-
         public List<Route> GetAll()
         {
             Dal = new DataAccessLayer();
@@ -51,13 +50,12 @@ namespace CasusExotischNederland.Model
             Dal = new DataAccessLayer();
             return Dal.GetRoutesByAreaID(areaId);
         }
+
         public List<RoutePoint> GetRoutePoints(int routeId)
         {
             Dal = new DataAccessLayer();
             return Dal.GetRoutePointsByRouteId(routeId); 
         }
-
-
 
         public void Create() { }
         public void Update() { }
