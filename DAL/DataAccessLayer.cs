@@ -325,10 +325,10 @@ namespace CasusExotischNederland.DAL
                         {
                             int pointId = reader.GetInt32(0); 
                             string pointName = reader.GetString(1);  
-                            string pointDescription = reader.GetString(2);  
-                            float coordinateX = (float)reader.GetDouble(3);  
-                            float coordinateY = (float)reader.GetDouble(4);  
-                            routePoints.Add(new RoutePoint(pointId, pointName, pointDescription, coordinateX, coordinateY));
+                            string pointDescription = reader.GetString(2);
+                            double coordinateX = reader.GetDouble(3);
+                            double coordinateY = reader.GetDouble(4);
+                            routePoints.Add(new RoutePoint(pointId, pointName, pointDescription, (float)coordinateX, (float)coordinateY));
                         }
                     }
                 }
@@ -352,9 +352,9 @@ namespace CasusExotischNederland.DAL
                             int id = reader.GetInt32(0);
                             string name = reader.GetString(1);
                             string description = reader.GetString(2);
-                            float coordinateX = reader.GetFloat(3);
-                            float coordinateY = reader.GetFloat(4);
-                            routePoints.Add(new RoutePoint(id, name, description, coordinateX, coordinateY));
+                            double coordinateX = reader.GetDouble(3);
+                            double coordinateY = reader.GetDouble(4);
+                            routePoints.Add(new RoutePoint(id, name, description, (float)coordinateX, (float)coordinateY));
                         }
                     }
                 }
@@ -378,9 +378,9 @@ namespace CasusExotischNederland.DAL
                             int id = reader.GetInt32(0);
                             string name = reader.GetString(1);
                             string description = reader.GetString(2);
-                            float x = reader.GetFloat(3);
-                            float y = reader.GetFloat(4);
-                            routepoints.Add(new RoutePoint(id, name,description, x, y));
+                            double x = reader.GetDouble(3);
+                            double y = reader.GetDouble(4);
+                            routepoints.Add(new RoutePoint(id, name,description, (float)x, (float)y));
                         }
                     }
                 }
@@ -506,8 +506,8 @@ namespace CasusExotischNederland.DAL
                                 reader.GetInt32(0),
                                 reader.GetString(1),
                                 reader.GetString(2),
-                                reader.GetFloat(3),
-                                reader.GetFloat(4)
+                                (float)reader.GetDouble(3),
+                                (float)reader.GetDouble(4)
                             );
                         }
                     }
@@ -533,10 +533,10 @@ namespace CasusExotischNederland.DAL
                             RoutePoint routePointId = GetRoutePointById(reader.GetInt32(1));
                             string name = reader.GetString(2);
                             string description = reader.GetString(3);
-                            float coordinateX = reader.GetFloat(4);
-                            float coordinateY = reader.GetFloat(5);
+                            double coordinateX = reader.GetDouble(4);
+                            double coordinateY = reader.GetDouble(5);
                             string type = reader.GetString(6);
-                            pois.Add(new Poi(id, routePointId, name, description, coordinateX, coordinateY, type));
+                            pois.Add(new Poi(id, routePointId, name, description, (float)coordinateX, (float)coordinateY, type));
                         }
                     }
                 }
@@ -553,7 +553,7 @@ namespace CasusExotischNederland.DAL
                 string sql = "SELECT * FROM [POI] WHERE RoutePointID = @RoutePointID ";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
-                    cmd.Parameters.AddWithValue("@ID", RoutePointID);
+                    cmd.Parameters.AddWithValue("@RoutePointID", RoutePointID);
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
@@ -563,8 +563,8 @@ namespace CasusExotischNederland.DAL
                                 rp,
                                 reader.GetString(2),
                                 reader.GetString(3),
-                                reader.GetFloat(4),
-                                reader.GetFloat(5),
+                               (float)reader.GetDouble(4),
+                               (float)reader.GetDouble(5),
                                 reader.GetString(6)
                             );
                         }
