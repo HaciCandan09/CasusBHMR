@@ -59,7 +59,7 @@ namespace CasusExotischNederland
             Question question = new Question();
             User user = new User();
             
-            User currentUser = user.GetUserbyId(GlobalVariables.CurrentUserId);
+            User currentUser = user.GetbyId(GlobalVariables.CurrentUserId);
 
             Console.WriteLine("Select an area:");
             foreach (Area myArea in area.GetAll())
@@ -173,7 +173,7 @@ namespace CasusExotischNederland
             Console.WriteLine("Press 'Enter' to save the observation.");
             Console.ReadLine();
 
-            Observation observation = new Observation(1, selectedArea, selectedSpecies, user.GetUserbyId(GlobalVariables.CurrentUserId), DateTime.Now.Date, observationName, coordinateX, coordinateY, observationPhoto, location);
+            Observation observation = new Observation(1, selectedArea, selectedSpecies, user.GetbyId(GlobalVariables.CurrentUserId), DateTime.Now.Date, observationName, coordinateX, coordinateY, observationPhoto, location);
             observation.Create();
 
             Console.WriteLine("Observation has been successfully added.");
@@ -186,8 +186,8 @@ namespace CasusExotischNederland
         static void ShowProfile()
         {
             User user = new User();
-            user = user.GetUserbyId(GlobalVariables.CurrentUserId);
-            user.GetUserbyId(user.Id);
+            user = user.GetbyId(GlobalVariables.CurrentUserId);
+            user.GetbyId(user.Id);
             Console.WriteLine($"This is your ID: {user.Id}, Name: {user.Name}, Age: {user.Age}, Email: {user.Email}, Phonenumber: {user.PhoneNumber}");
             Console.WriteLine("Press 1 if you want to return to main menu. \nPress 2 if you want to update your profile. \nPress 3 if you want to delete your profile.");
             var ProfileAction = Console.ReadLine();
@@ -201,7 +201,7 @@ namespace CasusExotischNederland
                 Console.WriteLine("Welcome to updating your profile.");
                 Console.WriteLine("Enter your ID:");
                 int selectedID = Convert.ToInt32(Console.ReadLine());
-                user.GetUserbyId(user.Id);
+                user.GetbyId(user.Id);
 
                 Console.WriteLine("Enter User Name: ");
                 string newUserName = Console.ReadLine();
@@ -403,7 +403,7 @@ namespace CasusExotischNederland
         {
             User user = new User();
             List<int> userRols= new List<int>();
-            userRols = user.GetRolesById(Convert.ToInt32(GlobalVariables.CurrentUserId));
+            userRols = user.GetRolesByUserId(Convert.ToInt32(GlobalVariables.CurrentUserId));
 
             if (userRols.Contains(1))
             {
