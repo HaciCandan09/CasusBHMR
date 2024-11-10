@@ -70,7 +70,7 @@ namespace CasusExotischNederland.Model
             return Dal.GetUserById(userId);
         }
 
-        public List<int> GetRolesById(int id) {
+        public List<int> GetRolesByUserId(int id) {
             Dal = new DataAccessLayer();
             Dal.GetRolesByUserId(id);
             List<int> UserRoles = new List<int>();
