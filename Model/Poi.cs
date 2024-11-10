@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CasusExotischNederland.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace CasusExotischNederland.Model
         public float CoordinateX { get; set; }
         public float CoordinateY { get; set; }
         public string Type { get; set; }
+        public DataAccessLayer Dal { get; set; }
 
         public Poi(int id,RoutePoint routePoint, string name, string description, float coordinateX, float coordinateY, string type)
         {
@@ -25,6 +27,20 @@ namespace CasusExotischNederland.Model
             CoordinateX = coordinateX;
             CoordinateY = coordinateY;
             Type = type;
+        }
+
+        public Poi()
+        {
+            
+        }
+
+        public Poi GetPoiByRoutePointId(int routePointId)
+        {
+            Dal = new DataAccessLayer();
+            List<Poi> pois = Dal.GetPOIsByRoutePointId(routePointId);
+
+            // Return the first Poi (assuming one Poi per RoutePointId)
+            return pois.FirstOrDefault(); // If there's no Poi, this will return null
         }
 
         public void GetAll() { }

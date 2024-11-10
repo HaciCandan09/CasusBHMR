@@ -306,7 +306,7 @@ namespace CasusExotischNederland.DAL
             }
         }
 
-        
+
 
         /*
         public Route GetRouteById(int routeId)
@@ -338,6 +338,45 @@ namespace CasusExotischNederland.DAL
         */
 
         // RoutePoint CRUD
+        public List<RoutePoint> GetRoutePointsByRouteId(int routeId)
+        {
+            List<RoutePoint> routePoints = new List<RoutePoint>();
+
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+
+                // SQL Query to fetch all route points associated with the given RouteId
+                string sql = @"
+            SELECT rp.ID, rp.Name, rp.Description, rp.CoordinateX, rp.CoordinateY
+            FROM RoutePointRoute rpr
+            JOIN RoutePoint rp ON rpr.RoutePointID = rp.ID
+            WHERE rpr.RouteID = @RouteID";  // Using RouteID to filter
+
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@RouteID", routeId);  // Pass the RouteID as a parameter
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        // Iterate through the results and map them to RoutePoint objects
+                        while (reader.Read())
+                        {
+                            int pointId = reader.GetInt32(0);  // RoutePoint ID
+                            string pointName = reader.GetString(1);  // RoutePoint Name
+                            string pointDescription = reader.GetString(2);  // RoutePoint Description
+                            float coordinateX = (float)reader.GetDouble(3);  // CoordinateX
+                            float coordinateY = (float)reader.GetDouble(4);  // CoordinateY
+
+                            // Add the RoutePoint to the list
+                            routePoints.Add(new RoutePoint(pointId, pointName, pointDescription, coordinateX, coordinateY));
+                        }
+                    }
+                }
+            }
+
+            return routePoints;
+        }
         public List<RoutePoint> GetRoutePoints()
         {
             List<RoutePoint> routePoints = new List<RoutePoint>();
@@ -364,6 +403,41 @@ namespace CasusExotischNederland.DAL
             return routePoints;
         }
 
+        //public List<RoutePoint> GetRoutePoints(int routeId)
+        //{
+        //    List<RoutePoint> routePoints = new List<RoutePoint>();
+
+        //    using (SqlConnection connect = new SqlConnection(connectionString))
+        //    {
+        //        connect.Open();
+        //        // Adjust the query to select route points where RouteID matches the given routeId
+        //        string sql = "SELECT ID, Name, Description, CoordinateX, CoordinateY FROM RoutePoint WHERE ID = @ID";
+
+        //        using (SqlCommand cmd = new SqlCommand(sql, connect))
+        //        {
+        //            cmd.Parameters.AddWithValue("@ID", routeId);
+
+        //            using (SqlDataReader reader = cmd.ExecuteReader())
+        //            {
+        //                while (reader.Read())
+        //                {
+        //                    RoutePoint routePoint = new RoutePoint(
+        //                        reader.GetInt32(0),    // ID
+        //                        reader.GetString(1),   // Name
+        //                        reader.GetString(2),   // Description
+        //                        reader.GetFloat(3),    // CoordinateX
+        //                        reader.GetFloat(4)     // CoordinateY
+        //                    );
+
+        //                    routePoints.Add(routePoint);
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    return routePoints;
+        //}
+
         public List<RoutePoint> GetRoutePoints(int routeId)
         {
             List<RoutePoint> routePoints = new List<RoutePoint>();
@@ -371,24 +445,45 @@ namespace CasusExotischNederland.DAL
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
-                // Adjust the query to select route points where RouteID matches the given routeId
-                string sql = "SELECT ID, Name, Description, CoordinateX, CoordinateY FROM RoutePoint WHERE ID = @ID";
+
+                string sql = @"
+            SELECT RP.Id, RP.Name, RP.Description, RP.CoordinateX, RP.CoordinateY, 
+                   POI.Id AS PoiId, POI.Name AS PoiName, POI.Description AS PoiDescription, 
+                   POI.CoordinateX AS PoiCoordinateX, POI.CoordinateY AS PoiCoordinateY, POI.Type AS PoiType
+            FROM RoutePoint RP
+            LEFT JOIN POI POI ON RP.Id = POI.RoutePointID
+            WHERE RP.RouteId = @RouteId";
 
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
-                    cmd.Parameters.AddWithValue("@ID", routeId);
+                    cmd.Parameters.AddWithValue("@RouteId", routeId);
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            RoutePoint routePoint = new RoutePoint(
-                                reader.GetInt32(0),    // ID
-                                reader.GetString(1),   // Name
-                                reader.GetString(2),   // Description
-                                reader.GetFloat(3),    // CoordinateX
-                                reader.GetFloat(4)     // CoordinateY
-                            );
+                            RoutePoint routePoint = new RoutePoint
+                            {
+                                Id = reader.GetInt32(0),
+                                Name = reader.GetString(1),
+                                Description = reader.IsDBNull(2) ? null : reader.GetString(2),
+                                CoordinateX = reader.GetFloat(3),
+                                CoordinateY = reader.GetFloat(4),
+                            };
+
+                            // Check if a POI exists for this route point and set it
+                            if (!reader.IsDBNull(5)) // PoiId
+                            {
+                                routePoint.poi = new Poi
+                                {
+                                    Id = reader.GetInt32(5),
+                                    Name = reader.GetString(6),
+                                    Description = reader.IsDBNull(7) ? null : reader.GetString(7),
+                                    CoordinateX = reader.GetFloat(8),
+                                    CoordinateY = reader.GetFloat(9),
+                                    Type = reader.IsDBNull(10) ? null : reader.GetString(10)
+                                };
+                            }
 
                             routePoints.Add(routePoint);
                         }
@@ -506,6 +601,47 @@ namespace CasusExotischNederland.DAL
                     }
                 }
             }
+            return pois;
+        }
+
+
+        public List<Poi> GetPOIsByRoutePointId(int routePointId)
+        {
+            List<Poi> pois = new List<Poi>();
+
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+
+                string sql = @"
+            SELECT ID, Name, Description, CoordinateX, CoordinateY, Type
+            FROM POI
+            WHERE RoutePointID = @RoutePointID";
+
+                using (SqlCommand cmd = new SqlCommand(sql, connect))
+                {
+                    cmd.Parameters.AddWithValue("@RoutePointID", routePointId);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Poi poi = new Poi
+                            {
+                                Id = reader.GetInt32(0),
+                                Name = reader.GetString(1),
+                                Description = reader.IsDBNull(2) ? null : reader.GetString(2), // Handle possible NULL values for Description
+                                CoordinateX = (float)reader.GetDouble(3), // You can also use GetFloat() if it's a float in DB
+                                CoordinateY = (float)reader.GetDouble(4), // You can also use GetFloat() if it's a float in DB
+                                Type = reader.IsDBNull(5) ? null : reader.GetString(5) // Handle possible NULL values for Type
+                            };
+
+                            pois.Add(poi);
+                        }
+                    }
+                }
+            }
+
             return pois;
         }
 

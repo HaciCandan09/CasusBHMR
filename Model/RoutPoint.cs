@@ -28,6 +28,11 @@ namespace CasusExotischNederland.Model
             Routes = new List<Route>();
         }
 
+        public RoutePoint()
+        {
+                
+        }
+
         public void GetAll()
         {
             Dal = new DataAccessLayer();
@@ -38,6 +43,31 @@ namespace CasusExotischNederland.Model
         {
             Dal = new DataAccessLayer();
             return Dal.GetRouteById(routeId);
+        }
+
+        public Poi GetPoiByRoutePointId(int routePointId)
+        {
+            Dal = new DataAccessLayer();
+            List<Poi> pois = Dal.GetPOIsByRoutePointId(routePointId);
+
+            // Return the first Poi (assuming one Poi per RoutePointId)
+            return pois.FirstOrDefault(); // If there's no Poi, this will return null
+        }
+
+        public void LoadPoi()
+        {
+            Dal = new DataAccessLayer();
+            this.poi = Dal.GetPOIsByRoutePointId(this.Id).FirstOrDefault();  // Fetch POI for the current RoutePoint
+
+            // Log POI data to confirm it’s being retrieved
+            if (this.poi != null)
+            {
+                Console.WriteLine($"POI Loaded: {this.poi.Name}, {this.poi.Description}, {this.poi.Type}");
+            }
+            else
+            {
+                Console.WriteLine($"No POI found for RoutePoint ID: {this.Id}");
+            }
         }
 
         public void Create() { }

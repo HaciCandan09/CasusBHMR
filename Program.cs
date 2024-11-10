@@ -231,56 +231,96 @@ namespace CasusExotischNederland
 
         static void SelectRoute()
         {
+            
+            Area area = new Area();
+            List<Area> areas = area.GetAll();
+
+            Console.WriteLine("Select an Area:");
+            foreach (var a in areas)
+            {
+                Console.WriteLine($"{a.Id}: {a.Name} - {a.Description}");
+            }
+
+            Console.Write("Enter the Area ID: ");
+            int selectedAreaId = int.Parse(Console.ReadLine());
+
+            
+            Area selectedArea = area.GetById(selectedAreaId);
+            if (selectedArea == null)
+            {
+                Console.WriteLine("Invalid Area selected.");
+                return;
+            }
+
+            
+            Console.WriteLine($"\nRoutes available in Area: {selectedArea.Name}");
             Route route = new Route();
+            List<Route> routes = route.GetRoutesByArea(selectedAreaId);  
 
-            // Get all routes for selection
-            List<Route> routes = route.GetAll();
+            if (routes.Count == 0)
+            {
+                Console.WriteLine("No routes found for the selected area.");
+                return;
+            }
 
-            // Display and select the starting route
-            Console.WriteLine("Select the starting route:");
-            foreach (Route r in routes)
+            foreach (var r in routes)
             {
                 Console.WriteLine($"{r.Id}: {r.Name} - {r.Description}");
             }
 
-            Console.Write("Enter the starting route ID: ");
-            int startRouteId = int.Parse(Console.ReadLine());
-            Route startRoute = route.GetById(startRouteId);
+            
+            Console.Write("Enter the Route ID: ");
+            int selectedRouteId = int.Parse(Console.ReadLine());
 
-            // Display route points for the selected starting route
-            Console.WriteLine("Route points for the starting route:");
-            List<RoutePoint> startRoutePoints = route.GetRoutePoints(startRouteId);
-            foreach (RoutePoint point in startRoutePoints)
+            
+            Route selectedRoute = routes.Find(r => r.Id == selectedRouteId);
+            if (selectedRoute == null)
             {
-                Console.WriteLine($"{point.Id}: {point.Name} - {point.Description}");
+                Console.WriteLine("Invalid Route selected.");
+                return;
             }
 
-            // Display and select the ending route
-            Console.WriteLine("Select the destination route:");
-            foreach (Route r in routes)
+             
+            Console.WriteLine($"\nRoute points for Route: {selectedRoute.Name}");
+            List<RoutePoint> routePoints = route.GetRoutePoints(selectedRouteId);  
+
+            if (routePoints != null && routePoints.Count > 0)
             {
-                Console.WriteLine($"{r.Id}: {r.Name} - {r.Description}");
+                foreach (var point in routePoints)
+                {
+                    
+                    Console.WriteLine($"{point.Id}: {point.Name} - {point.Description}");
+                    Console.WriteLine($"Coordinates: ({point.CoordinateX}, {point.CoordinateY})");
+
+                    
+                    point.LoadPoi();  
+
+                    
+                    if (point.poi != null)
+                    {
+                        
+                        Console.WriteLine($"POI: {point.poi.Name} - {point.poi.Description}");
+                        Console.WriteLine($"POI Type: {point.poi.Type}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("No POI associated with this route point.");
+                    }
+
+                    Console.WriteLine();  
+                }
+            }
+            else
+            {
+                Console.WriteLine("No route points found for this route.");
             }
 
-            Console.Write("Enter the destination route ID: ");
-            int endRouteId = int.Parse(Console.ReadLine());
-            Route endRoute = route.GetById(endRouteId);
-
-            // Display route points for the selected ending route
-            Console.WriteLine("Route points for the destination route:");
-            List<RoutePoint> endRoutePoints = route.GetRoutePoints(endRouteId);
-            foreach (RoutePoint point in endRoutePoints)
-            {
-                Console.WriteLine($"{point.Id}: {point.Name} - {point.Description}");
-            }
-
-            // Display selected route summary
-            Console.WriteLine($"You selected a walk from {startRoute.Name} to {endRoute.Name}.");
-
-            Console.WriteLine("Press 'Enter' to go to the main menu.");
+           
+            Console.WriteLine("\nPress 'Enter' to return to the main menu.");
             Console.ReadLine();
             Console.Clear();
             Menu();
+
         }
 
 
