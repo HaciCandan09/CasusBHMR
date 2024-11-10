@@ -11,7 +11,7 @@ namespace CasusExotischNederland.DAL
     public class DataAccessLayer
     {
 
-        private string connectionString = "Data Source=.; Initial Catalog=ExotischNederland; Integrated Security=True;";
+        private string connectionString = "Data Source=RENAD; Initial Catalog=ExotischNederland; Integrated Security=True;";
 
         public DataAccessLayer()
         {
@@ -25,7 +25,7 @@ namespace CasusExotischNederland.DAL
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
-                string sql = "SELECT ID,Name,Age,Email,PhoneNumber  FROM User";
+                string sql = "SELECT ID,Name,Age,Email,PhoneNumber  FROM [User]";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -46,22 +46,24 @@ namespace CasusExotischNederland.DAL
             return users;
         }
 
-        public void CreateUser(User user)
+        public int CreateUser(User user)
         {
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
-                string sql = "INSERT INTO [User] (Name,Age,Email,PhoneNumber) VALUES (@Name,@Age,@Email,@PhoneNumber)";
+                string sql = "INSERT INTO [User] (Name,Age,Email,PhoneNumber) VALUES (@Name,@Age,@Email,@PhoneNumber); SELECT SCOPE_IDENTITY();";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
                     cmd.Parameters.AddWithValue("@Name", user.Name);
                     cmd.Parameters.AddWithValue("@Age", user.Age);
                     cmd.Parameters.AddWithValue("@Email", user.Email);
                     cmd.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber);
+                    int userId = Convert.ToInt32(cmd.ExecuteScalar());
 
-
-                    cmd.ExecuteNonQuery();
+                    connect.Close();
+                    return userId;
                 }
+
             }
         }
 
@@ -809,8 +811,8 @@ namespace CasusExotischNederland.DAL
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 connect.Open();
-                string sql = "INSERT INTO Observation (AreaID,SpeciesID,UserID,Name,Date,Location,CoordinateX,CoordinateY) VALUES " +
-                    "(@AreaID, @SpeciesID, @UserID,@Name,@Date,@Location,@CoordinateX,@CoordinateY)";
+                string sql = "INSERT INTO Observation (AreaID,SpeciesID,UserID,Name,Date,Location,CoordinateX,CoordinateY, FotoUrl) VALUES " +
+                    "(@AreaID, @SpeciesID, @UserID,@Name,@Date,@Location,@CoordinateX,@CoordinateY,@FotoUrl)";
                 using (SqlCommand cmd = new SqlCommand(sql, connect))
                 {
                     cmd.Parameters.AddWithValue("@AreaId", observation.Area.Id);
@@ -821,6 +823,7 @@ namespace CasusExotischNederland.DAL
                     cmd.Parameters.AddWithValue("@Location", observation.Location);
                     cmd.Parameters.AddWithValue("@CoordinateX", observation.CoordinateX);
                     cmd.Parameters.AddWithValue("@CoordinateY", observation.CoordinateY);
+                    cmd.Parameters.AddWithValue("@FotoUrl", observation.FotoUrl);
 
                     cmd.ExecuteNonQuery();
                 }
