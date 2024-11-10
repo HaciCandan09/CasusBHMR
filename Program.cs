@@ -297,8 +297,10 @@ namespace CasusExotischNederland
                     Console.WriteLine($"Coordinates: ({point.CoordinateX}, {point.CoordinateY})");
 
                     Poi poi = new();
-                    if(point.Id == poi.GetAll()[0].RoutePoint.Id)
-                    point.GetPoiByRoutePointId(point.Id);  
+                    if (point.Id == poi.GetAll()[0].RoutePoint.Id)
+                    {
+                        point.GetPoiByRoutePointId(point.Id);
+                    }
                     
                     if (point.poi != null)
                     {
