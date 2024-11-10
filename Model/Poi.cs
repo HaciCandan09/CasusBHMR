@@ -34,7 +34,11 @@ namespace CasusExotischNederland.Model
             
         }
 
-        public void GetAll() { }
+        public List<Poi> GetAll()
+        {
+            Dal = new DataAccessLayer();
+            return Dal.GetAllPois();
+        }
         public void Create() { }
         public void Update() { }
         public void Delete() { }

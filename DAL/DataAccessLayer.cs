@@ -516,7 +516,7 @@ namespace CasusExotischNederland.DAL
             return routePoint;
         }
 
-        public List<Poi> GetAllPoi()
+        public List<Poi> GetAllPois()
         {
             List<Poi> pois = new List<Poi>();
             using (SqlConnection connect = new SqlConnection(connectionString))
